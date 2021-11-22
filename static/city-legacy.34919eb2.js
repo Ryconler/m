@@ -1,0 +1,2 @@
+System.register(["./lodash-legacy.7ff748b4.js"],(function(t){"use strict";var c;return{setters:[function(t){c=t.v}],execute:function(){t({g:function(){var t=c.get(e)||"",n=t.split("_")[0],i=t.split("_")[1];return n&&i?{cityId:n,cityName:i}:null},s:function(t,n){c.set(e,"".concat(t,"_").concat(n))}});var e="city";t("D",{cityName:"南京",cityId:"320100"})}}}));
+//# sourceMappingURL=city-legacy.34919eb2.js.map
