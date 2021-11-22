@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="author" content="Jesse,JesseZhu,朱星杰" />
+    <meta name="description" content="我找木小先，JesseZhu的个人网站" />
+    <meta name="keywords" content="Jesse,JesseZhu,朱星杰,木小先" />
+    <meta name="robots" content="all" />
+    <title>我找木小先</title>
+    <link rel="icon" href="/favicon.ico" />
+    <script>
+      function calc() {
+        var html = document.documentElement
+        let width = html.clientWidth
+        width = width > 500 ? 500 : width
+        html.style.fontSize = width / 10 + 'px'
+      }
+      window.addEventListener('resize', calc)
+      calc()
+    </script>
+    <script>
+      var _hmt = _hmt || []
+      ;(function () {
+        var hm = document.createElement('script')
+        hm.src = 'https://hm.baidu.com/hm.js?a1da85fea7321dafdc54bd13bfd2731b'
+        var s = document.getElementsByTagName('script')[0]
+        s.parentNode.insertBefore(hm, s)
+      })()
+    </script>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

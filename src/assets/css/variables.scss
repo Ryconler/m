@@ -1,0 +1,20 @@
+@mixin ellicpsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}
+@mixin tellicpsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+$deep-text-color: #333333;
+$light-text-color: #999999;
+
+$deep-bg-color: #aaaaaa;
+$light-bg-color: #eeeeee;

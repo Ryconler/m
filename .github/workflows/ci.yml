@@ -1,0 +1,36 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: GitHub Actions Build and Deploy CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [15.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Install
+      run:  npm ci
+
+    - name: Build
+      run:  npm run build --if-present
+
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with: 
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} #secrets.ACCESS_TOKEN是项目配置的密钥
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: dist # The folder the action should deploy.
+        CLEAN: true # Automatically remove deleted files from the deploy branch
