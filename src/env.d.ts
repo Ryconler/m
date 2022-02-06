@@ -8,6 +8,8 @@ declare module '*.vue' {
 }
 
 interface Window {
+  app: any
+  localjs: any
   AMap: any
-  onAMapLoaded: () => void
+  onAMapLoaded: () => any
 }

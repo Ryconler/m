@@ -1,0 +1,33 @@
+/*  配置中未忽略'node_modules'的px转换，vant组件的尺寸需全部手动设置一下，否则默认的尺寸都太小了 */
+:root {
+  /* 基础变量 */
+  // https://vant-contrib.gitee.io/vant/v3/#/zh-CN/config-provider#ji-chu-bian-liang
+  // Padding
+  --van-padding-base: calc(4px * 2) !important;
+  --van-padding-xs: calc(8px * 2) !important;
+  --van-padding-sm: calc(12px * 2) !important;
+  --van-padding-md: calc(16px * 2) !important;
+  --van-padding-lg: calc(24px * 2) !important;
+  --van-padding-xl: calc(32px * 2) !important;
+
+  // Font
+  --van-font-size-xs: calc(10px * 2) !important;
+  --van-font-size-sm: calc(12px * 2) !important;
+  --van-font-size-md: calc(14px * 2) !important;
+  --van-font-size-lg: calc(16px * 2) !important;
+  --van-line-height-xs: calc(14px * 2) !important;
+  --van-line-height-sm: calc(18px * 2) !important;
+  --van-line-height-md: calc(20px * 2) !important;
+  --van-line-height-lg: calc(22px * 2) !important;
+
+  // Border
+  --van-border-width-base: calc(1px * 2) !important;
+  --van-border-radius-sm: calc(2px * 2) !important;
+  --van-border-radius-md: calc(4px * 2) !important;
+  --van-border-radius-lg: calc(8px * 2) !important;
+  --van-border-radius-max: calc(999px * 2) !important;
+
+  /* 组件变量 */
+  --van-list-text-line-height: calc(50px * 2) !important;
+  --van-list-loading-icon-size: calc(16px * 2) !important;
+}

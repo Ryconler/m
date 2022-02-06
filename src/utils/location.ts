@@ -47,20 +47,23 @@ async function getH5Location(): Promise<LocationType | null> {
           })
           geolocation.getCurrentPosition()
           AMap.event.addListener(geolocation, 'complete', (data: any) => {
-            console.log(data)
-            const adcode = data?.addressComponent?.adcode
-            const cityId = adcode ? `${adcode.slice(0, 4)}00` : ''
-            const city = data?.addressComponent?.city
-            const cityName = city ? city.replace('市', '') : ''
-            const lat = data?.position?.lat
-            const lng = data?.position?.lng
-            const obj: LocationType = {
-              cityId,
-              cityName,
-              lat,
-              lng
+            console.log('geolocation', data)
+            if (data && data.addressComponent && data.position) {
+              const cityId = data.addressComponent.adcode
+              const city = data.addressComponent.city
+              const cityName = city ? city.replace('市', '') : ''
+              const lat = data.position.lat
+              const lng = data.position.lng
+              const obj: LocationType = {
+                cityId,
+                cityName,
+                lat,
+                lng
+              }
+              resolve(cityId ? obj : null)
+            } else {
+              resolve(null)
             }
-            resolve(cityId ? obj : null)
           }) // 返回定位信息
           AMap.event.addListener(geolocation, 'error', (error: any) => {
             console.log(error)

@@ -1,67 +1,26 @@
 <template>
-  <div class="city-choose">
-    <div v-if="hotCitys.length > 0" class="hot-city">
-      <h2 class="hot-city-title">热门城市</h2>
-      <ul class="hot-city-items clearfix">
-        <li
-          v-for="(item, index) in hotCitys"
-          :key="'hot-city-' + index"
-          class="hot-city-item"
-          @click="useCity(item)"
-        >
-          <span>{{ item.cityName }}</span>
-        </li>
-      </ul>
-    </div>
-    <div v-if="historyCitys.length > 0" class="history-city">
-      <h2 class="history-city-title">
-        历史访问城市<i class="delete-icon" @click="clearHistory"> </i>
-      </h2>
-      <ul class="history-city-items clearfix">
-        <li
-          v-for="(item, index) in historyCitys"
-          :key="'history-city-' + index"
-          class="history-city-item"
-          @click="useCity(item)"
-        >
-          <span>{{ item.cityName }}</span>
-        </li>
-      </ul>
-    </div>
-    <div class="city-list">
-      <div v-for="(py, index) in listCitysKeys" :key="index">
-        <h3 :id="py" class="city-char">{{ py }}</h3>
-        <ul class="city-list-items clearfix">
-          <li
-            v-for="(city, index) in listCitys[py]"
-            :key="'city-list-item-' + index"
-            class="city-list-item"
-            @click="useCity(city)"
-          >
-            <span>{{ city.cityName }}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <VanIndexBar>
+    <template v-for="item in citysKeys" :key="item">
+      <VanIndexAnchor :index="item" />
+      <VanCell
+        v-for="(item2, index2) in groupedCitys[item]"
+        :key="index2"
+        :title="item2.NAME"
+        @click="cityClick(item2)"
+      />
+    </template>
+  </VanIndexBar>
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { CityType, setSelectCity } from '@/utils/index'
 import { getCityChooseData } from '@/composables/city-choose/cityChoose'
+import {
+  IndexBar as VanIndexBar,
+  IndexAnchor as VanIndexAnchor,
+  Cell as VanCell
+} from 'vant'
 
-const route = useRoute()
-
-const { listCitys, historyCitys, hotCitys, listCitysKeys } = getCityChooseData()
-const useCity = (city: CityType) => {
-  setSelectCity(city.cityId, city.cityName)
-  const referrer = route.query.referrer || document.referrer || ''
-  location.href = referrer.toString()
-}
-const clearHistory = () => {
-  historyCitys.value = []
-}
+const { groupedCitys, citysKeys, cityClick } = getCityChooseData()
 </script>
 
 <style lang="scss" scoped>

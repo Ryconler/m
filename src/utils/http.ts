@@ -1,6 +1,9 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { get } from 'lodash'
 import { Toast } from 'vant'
 import { ComponentInstance } from 'vant/lib/utils'
+import { auth } from '.'
+import { setLoading } from './helper'
 
 export interface ResultType<T> {
   data: T
@@ -8,12 +11,23 @@ export interface ResultType<T> {
   msg: string
 }
 
-function createService(options: AxiosRequestConfig, loading = false) {
+function createService(
+  options: AxiosRequestConfig,
+  loading = false,
+  toasting = false
+) {
+  const authHeader = auth.getAuthHeader()
   let toast: ComponentInstance | null = null
-  const service = axios.create(options)
+  const service = axios.create({
+    ...options,
+    headers: authHeader
+  })
   service.interceptors.request.use(
     (config: AxiosRequestConfig) => {
-      if (loading && !toast) {
+      if (loading) {
+        setLoading(true)
+      }
+      if (toasting) {
         toast = Toast.loading({
           forbidClick: true,
           duration: 0
@@ -27,7 +41,10 @@ function createService(options: AxiosRequestConfig, loading = false) {
   )
   service.interceptors.response.use(
     (response: AxiosResponse) => {
-      if (toast) {
+      if (loading) {
+        setLoading(false)
+      }
+      if (toasting && toast) {
         toast.clear()
         toast = null
       }
@@ -36,7 +53,13 @@ function createService(options: AxiosRequestConfig, loading = false) {
       return res || {}
     },
     (error: AxiosError) => {
-      if (toast) {
+      if (get(error, 'response.data.code') == 'INVALID_CREDENTIALS') {
+        location.href = '/login'
+      }
+      if (loading) {
+        setLoading(false)
+      }
+      if (toasting && toast) {
         toast.clear()
         toast = null
       }
@@ -51,9 +74,21 @@ const $http = createService({ withCredentials: true })
 export const http = $http
 
 /* 带cookie、带loading */
-const $lHttp = createService({ withCredentials: true }, true)
+const $lHttp = createService({ withCredentials: true }, true, false)
 export const lHttp = $lHttp
+
+/* 带cookie、带toast */
+const $tHttp = createService({ withCredentials: true }, false, true)
+export const tHttp = $tHttp
 
 /* 不带cookie */
 const $ajax = createService({ withCredentials: false })
 export const ajax = $ajax
+
+/* 不带cookie、带loading */
+const $lAjax = createService({ withCredentials: false }, true, false)
+export const lAjax = $lAjax
+
+/* 不带cookie、带toast */
+const $tAjax = createService({ withCredentials: false }, false, true)
+export const tAjax = $tAjax

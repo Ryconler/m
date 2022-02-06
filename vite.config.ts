@@ -2,6 +2,7 @@ import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
 import styleImport from 'vite-plugin-style-import'
 import path from 'path'
+import fs from 'fs'
 import autoprefixer from 'autoprefixer'
 import pxtorem from 'postcss-pxtorem'
 
@@ -13,10 +14,7 @@ export default ({ command, mode }) => {
   return {
     plugins: [
       vue(),
-      legacy({
-        targets: ['> 1%', 'last 1 version', 'ie >= 11'],
-        additionalLegacyPolyfills: ['regenerator-runtime/runtime']
-      }),
+      legacy(),
       styleImport({
         libs: [
           {
@@ -50,29 +48,21 @@ export default ({ command, mode }) => {
       alias: {
         '@': path.resolve(__dirname, 'src'),
         '~@': path.resolve(__dirname, 'src')
-      },
-      // 导入时想要省略的扩展名列表。注意，不建议忽略自定义导入类型的扩展名（例如：.vue)
-      extensions: [
-        '.mjs',
-        '.js',
-        '.ts',
-        '.jsx',
-        '.tsx',
-        '.json',
-        '.vue',
-        '.scss'
-      ]
+      }
     },
     server: {
       open: false,
-      cors: true
+      cors: true,
+      https: {
+        cert: fs.readFileSync('./config/1__.cekid.com_bundle.crt'),
+        key: fs.readFileSync('./config/2__.cekid.com.key')
+      }
     },
     build: {
       outDir: 'dist',
       assetsDir: 'static',
       sourcemap: true,
       target: 'es2015'
-    },
-    clearScreen: false // 避免 Vite 清屏而错过在终端中打印某些关键信息
+    }
   }
 }

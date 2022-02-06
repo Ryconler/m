@@ -13,11 +13,11 @@ export default defineComponent({
   },
   props: {
     width: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     height: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     fit: {
@@ -34,6 +34,8 @@ export default defineComponent({
       const attrs: any = JSON.parse(JSON.stringify(this.$props))
       if (attrs.width) {
         attrs.width = `${parseInt(attrs.width) / 75}rem`
+      } else {
+        attrs.width = '100%'
       }
       if (attrs.height) {
         attrs.height = `${parseInt(attrs.height) / 75}rem`

@@ -7,10 +7,11 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "build-tsc": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview --host"
+    "build-dev": "vite build --base=/",
+    "serve": "vite preview --base=/ --host"
   },
   "dependencies": {
+    "@cloudbase/js-sdk": "^1.7.1",
     "axios": "^0.21.4",
     "js-cookie": "^2.2.1",
     "load-script": "^2.0.0",

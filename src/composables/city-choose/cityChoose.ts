@@ -1,29 +1,72 @@
-import { CityType } from '@/utils'
-import { computed, Ref, ref } from 'vue'
+import { queryAllCitys } from '@/api/cityChoose'
+import { CityType, GroupedCitysCity } from '@/constant/cityChoose'
+import { setSelectCity } from '@/utils'
+import { groupBy } from 'lodash'
+import { nextTick, onMounted, Ref, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 export function getCityChooseData() {
-  const listCitys: Ref<any> = ref({
-    N: [{ cityName: '南京', cityId: '320100' }],
-    S: [
-      { cityName: '上海', cityId: '310100' },
-      { cityName: '上海', cityId: '310100' }
+  const route = useRoute()
+
+  const groupedCitys: Ref<GroupedCitysCity> = ref({})
+  const citysKeys: Ref<string[]> = ref([])
+  onMounted(async () => {
+    const allCitys: CityType[] = await queryAllCitys()
+    groupedCitys.value = {}
+    groupedCitys.value = groupBy(allCitys, (item) => {
+      return item.PINYIN && item.PINYIN[0]
+    })
+    for (const citys of Object.values(groupedCitys.value)) {
+      citys.sort((item1, item2) => {
+        if (item1.PINYIN < item2.PINYIN) {
+          return -1
+        } else {
+          return 1
+        }
+      })
+    }
+    citysKeys.value = [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'G',
+      'H',
+      'I',
+      'J',
+      'K',
+      'L',
+      'M',
+      'N',
+      'O',
+      'P',
+      'Q',
+      'R',
+      'S',
+      'T',
+      'U',
+      'V',
+      'W',
+      'X',
+      'Y',
+      'Z'
     ]
+    await nextTick()
+    window.scrollTo(0, 1)
+    window.scrollTo(0, 0)
   })
-  const historyCitys: Ref<CityType[]> = ref([
-    { cityName: '南京', cityId: '320100' },
-    { cityName: '上海', cityId: '310100' }
-  ])
-  const hotCitys: Ref<CityType[]> = ref([
-    { cityName: '南京', cityId: '320100' },
-    { cityName: '上海', cityId: '310100' }
-  ])
-  const listCitysKeys: Ref<string[]> = computed(() => {
-    return Object.keys(listCitys.value).sort()
-  })
+
+  const cityClick = (city: CityType) => {
+    setSelectCity(city.ID, city.NAME)
+    const referrer =
+      route.query.referrer || document.referrer || '//m.wzmxx.com'
+    location.href = decodeURIComponent(referrer.toString())
+  }
   return {
-    listCitys,
-    historyCitys,
-    hotCitys,
-    listCitysKeys
+    groupedCitys,
+    citysKeys,
+    cityClick
   }
 }

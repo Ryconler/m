@@ -1,9 +1,8 @@
 <template>
-  <!-- 搜索中，可输入 -->
-  <div v-if="isSearching" class="search-bar searching">
+  <div class="search-bar">
     <VanSearch
       v-model="searchValue"
-      :placeholder="searchBarConfig.placeholder"
+      placeholder="搜索还没有做好"
       shape="round"
       :clear-icon="clearIcon"
       autofocus
@@ -19,141 +18,28 @@
       </template>
     </VanSearch>
   </div>
-  <!-- 未搜索，不可输入 -->
-  <div v-else class="search-bar nosearch">
-    <div class="city-info" @click="cityClick">
-      <div class="city-name">{{ selectCity?.cityName }}</div>
-      <img src="@/assets/images/search-bar/icon-switchcity.png" />
-    </div>
-    <div class="search-input" @click="inputClick">
-      <img src="@/assets/images/search-bar/icon-search.png" />
-      <div class="search-placeholder">{{ searchBarConfig.placeholder }}</div>
-    </div>
-    <div class="user-avatar" @click="avatarClick">
-      <img src="@/assets/images/search-bar/icon-avatar.png" />
-    </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
-import { Search as VanSearch } from 'vant'
+import { Search as VanSearch, Toast } from 'vant'
 import clearIcon from '@/assets/images/search-bar/icon-clear.png'
 import { getSearchBarData } from '@/composables/search-bar/searchBar'
 
-defineProps({
-  isSearching: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const router = useRouter()
-const { searchBarConfig, selectCity, searchValue } = getSearchBarData()
-const cityClick = () => {
-  router.push({
-    name: 'cityChoose',
-    query: {
-      referrer: location.href
-    }
-  })
-}
-const inputClick = () => {
-  router.push({
-    name: 'search',
-    query: {
-      referrer: location.href
-    }
-  })
-}
+const { searchValue } = getSearchBarData()
 const searchClick = () => {
-  console.log(searchValue)
-}
-const avatarClick = () => {
-  router.push({
-    name: 'photography'
-  })
+  Toast(searchValue.value)
 }
 </script>
 
 <style lang="scss" scoped>
 .search-bar {
-  width: 100%;
+  box-sizing: border-box;
+  width: 750px;
   height: 88px;
   background-color: white;
   display: flex;
   align-items: center;
   position: relative;
-  /* 给titlebar一个超出顶部2px白色背景，解决滑动时fixed布局出现抖动导致顶部露出空隙的问题 */
-  &::before {
-    content: '';
-    display: block;
-    position: absolute;
-    background: white;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: -4px;
-    // 必须要设置translateZ(0),开启gpu渲染
-    transform: translate3d(0, -4px, 0);
-  }
-}
-.search-bar.nosearch {
-  .city-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 200px;
-    height: 100%;
-    padding: 0 20px;
-    .city-name {
-      margin-right: 8px;
-      font-size: 28px;
-      color: $deep-text-color;
-      font-weight: bold;
-      @include ellicpsis;
-    }
-    img {
-      width: 20px;
-      height: 20px;
-    }
-  }
-  .search-input {
-    flex: 1;
-    height: 60px;
-    background: $light-bg-color;
-    border-radius: 60px;
-    padding: 0 26px;
-    display: flex;
-    align-items: center;
-    img {
-      margin-right: 10px;
-      width: 26px;
-      height: 26px;
-      display: block;
-    }
-    .search-placeholder {
-      font-size: 26px;
-      line-height: 30px;
-      display: flex;
-      align-items: center;
-      line-height: normal;
-      color: $light-text-color;
-    }
-  }
-  .user-avatar {
-    width: 88px;
-    height: 88px;
-    padding: 20px;
-    img {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-  }
-}
-.search-bar.searching {
   padding: 0 20px;
   :deep(.van-search) {
     display: flex;

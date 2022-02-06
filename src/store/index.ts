@@ -1,9 +1,26 @@
+import { auth } from '@/utils'
 import { createStore } from 'vuex'
-
-const store = createStore({
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {}
+import home from './home'
+interface stateType {
+  userInfo: any
+}
+export default createStore({
+  state: {
+    userInfo: null
+  },
+  mutations: {
+    setUserInfo(state: stateType, userInfo: any) {
+      state.userInfo = userInfo
+    }
+  },
+  actions: {
+    async queryUserInfo({ commit }) {
+      const user = await auth.getCurrenUser()
+      commit('setUserInfo', user)
+      return user
+    }
+  },
+  modules: {
+    home
+  }
 })
-export default store
