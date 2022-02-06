@@ -53,10 +53,10 @@ export default ({ command, mode }) => {
     server: {
       open: false,
       cors: true,
-      https: {
-        cert: fs.readFileSync('./config/1__.cekid.com_bundle.crt'),
-        key: fs.readFileSync('./config/2__.cekid.com.key')
-      }
+      // https: {
+      //   cert: fs.readFileSync('./config/wzmxx.com.pem'),
+      //   key: fs.readFileSync('./config/wzmxx.com.key')
+      // }
     },
     build: {
       outDir: 'dist',
