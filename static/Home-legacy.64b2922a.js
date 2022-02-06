@@ -1,2 +1,0 @@
-System.register(["./SearchBar-legacy.7e3b4f6c.js","./vendor-legacy.b50a78d2.js","./lodash-legacy.7ff748b4.js","./city-legacy.34919eb2.js","./location-legacy.6e0bfe25.js","./index-legacy.352ad266.js"],(function(e){"use strict";var n,t,c,u,i;return{setters:[function(e){n=e.S},function(e){t=e.d,c=e.h,u=e.i,i=e.o},function(){},function(){},function(){},function(){}],execute:function(){e("default",t({setup:function(e){return function(e,t){return i(),c("div",null,[u(n)])}}}))}}}));
-//# sourceMappingURL=Home-legacy.64b2922a.js.map
