@@ -27,6 +27,9 @@ jobs:
     - name: Build
       run:  npm run build --if-present
 
+    - name: fix404
+      run:  cp dist/index.html dist/404.html  
+
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with: 
