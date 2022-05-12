@@ -13,14 +13,15 @@
     <title>我找木小先</title>
     <link rel="icon" href="/favicon.ico" />
     <script>
-      function calc() {
-        var html = document.documentElement
-        let width = html.clientWidth
-        width = width > 500 ? 500 : width
-        html.style.fontSize = width / 10 + 'px'
-      }
-      window.addEventListener('resize', calc)
-      calc()
+      ;(function flexible(window, document) {
+        function setRemUnit() {
+          var rem = document.documentElement.clientWidth / 10
+          if (rem > 60) rem = 60
+          document.documentElement.style.fontSize = rem + 'px'
+        }
+        setRemUnit()
+        window.addEventListener('resize', setRemUnit)
+      })(window, document)
     </script>
     <script>
       // var _hmt = _hmt || []

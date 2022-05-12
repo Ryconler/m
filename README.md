@@ -1,30 +1,19 @@
-# batcave
+# m
 
 > A Vue.js project
 
 ## Build Setup
 
-``` bash
-# install dependencies
+```bash
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 开发环境运行
 npm run dev
 
-# build for production with minification
+# 生产环境打包
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
+# 生产环境预览
+npm run serve
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

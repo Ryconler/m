@@ -1,37 +1,29 @@
 import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
-import styleImport from 'vite-plugin-style-import'
+import styleImport, { VantResolve } from 'vite-plugin-style-import'
 import path from 'path'
-import fs from 'fs'
 import autoprefixer from 'autoprefixer'
 import pxtorem from 'postcss-pxtorem'
 
 // https://vitejs.dev/config/
 export default ({ command, mode }) => {
   console.log(command, mode)
-  const IS_PROD = mode === 'production'
-
   return {
     plugins: [
       vue(),
       legacy(),
       styleImport({
-        libs: [
-          {
-            libraryName: 'vant',
-            esModule: true,
-            resolveStyle: (name) => `vant/es/${name}/style`
-          }
-        ]
+        resolves: [VantResolve()]
       })
     ],
-    base: IS_PROD ? '/' : '/', // 设置打包路径
+    base: '/', // 设置打包路径
     css: {
       postcss: {
         plugins: [
           autoprefixer(),
           pxtorem({
-            rootValue: 75,
+            // index.html设置了1rem=clientWidth/10；设计稿的屏幕宽度是750，所以这里设75可以在代码中直接使用设计稿给的尺寸
+            rootValue: 75, // 1px -> 1/75rem
             propList: ['*']
             // 不加 exclude: 'node_modules' ,打包后会出现部分px未转换的问题
           })
@@ -40,7 +32,7 @@ export default ({ command, mode }) => {
       preprocessorOptions: {
         scss: {
           charset: false,
-          additionalData: `@import "@/assets/css/variables.scss";`
+          additionalData: `@import "@/assets/css/variables.scss";@import "@/assets/css/vant-config.scss";`
         }
       }
     },
@@ -52,11 +44,7 @@ export default ({ command, mode }) => {
     },
     server: {
       open: false,
-      cors: true,
-      // https: {
-      //   cert: fs.readFileSync('./config/wzmxx.com.pem'),
-      //   key: fs.readFileSync('./config/wzmxx.com.key')
-      // }
+      cors: true
     },
     build: {
       outDir: 'dist',
