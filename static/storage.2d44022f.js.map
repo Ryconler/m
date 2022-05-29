@@ -1,0 +1,1 @@
+{"version":3,"file":"storage.2d44022f.js","sources":["../../src/constant/storage.ts"],"sourcesContent":["export const StorageKeys = {\n  Position: 'position', //定位缓存\n  SendTime: 'send_time' //发送验证码时间\n}\n\nexport const CookieKeys = {\n  City: 'city'\n}\n"],"names":[],"mappings":"KAAa,GAAc,CACzB,SAAU,WACV,SAAU,WACZ,EAEa,EAAa,CACxB,KAAM,MACR"}

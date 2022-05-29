@@ -1,0 +1,1 @@
+{"version":3,"file":"urlPrefixes.2e917cec.js","sources":["../../src/constant/urlPrefixes.ts"],"sourcesContent":["export default {\n  cloudbaseApi: `https://wzmxx-cloudbase-6gq43u4scecde6fc-1257031685.ap-shanghai.service.tcloudbase.com`,\n  mapi: `//m-api.wzmxx.com`\n}\n"],"names":[],"mappings":"AAAA,MAAe,CACb,aAAc,yFACd,KAAM,mBACR"}

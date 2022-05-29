@@ -1,0 +1,1 @@
+{"version":3,"file":"storage-legacy.ca67a28d.js","sources":["../../src/constant/storage.ts"],"sourcesContent":["export const StorageKeys = {\n  Position: 'position', //定位缓存\n  SendTime: 'send_time' //发送验证码时间\n}\n\nexport const CookieKeys = {\n  City: 'city'\n}\n"],"names":["Position","SendTime","City"],"mappings":"6EAA2B,CACzBA,SAAU,WACVC,SAAU,oBAGc,CACxBC,KAAM"}

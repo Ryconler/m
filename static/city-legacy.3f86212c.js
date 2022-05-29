@@ -1,0 +1,2 @@
+System.register(["./index-legacy.24dc3dcd.js","./storage-legacy.ca67a28d.js"],(function(t){"use strict";var c,e;return{setters:[function(t){c=t.O},function(t){e=t.C}],execute:function(){t({g:function(){var t=c.get(e.City)||"",n=t.split("_")[0],i=t.split("_")[1];return n&&i?{cityId:n,cityName:i}:null},s:function(t,n){c.set(e.City,"".concat(t,"_").concat(n))}})}}}));
+//# sourceMappingURL=city-legacy.3f86212c.js.map
