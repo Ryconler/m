@@ -23,6 +23,42 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/login/Login.vue')
+  },
+  /* 自营摄影频道页 */
+  {
+    path: '/photography',
+    name: 'photography',
+    component: () => import('@/views/photography/Photography.vue')
+  },
+  /* 服务分享赚页 */
+  {
+    path: '/share-earn',
+    name: 'shareEarn',
+    component: () => import('@/views/share-earn/ShareEarn.vue')
+  },
+  /* 分享赚我的清单列表页 */
+  {
+    path: '/share-earn/share-list',
+    name: 'shareList',
+    component: () => import('@/views/share-earn/share-list/ShareList.vue')
+  },
+  /* 云客与企微的服务分享页 */
+  {
+    path: '/share-service',
+    name: 'shareService',
+    component: () => import('@/views/share-service/ShareService.vue')
+  },
+  /* 云客与企微的服务分享任务列表页 */
+  {
+    path: '/share-service/task-list',
+    name: 'shareServiceTaskList',
+    component: () => import('@/views/share-service/task-list/TaskList.vue')
+  },
+  /* 云客与企微的服务分享任务详情页 */
+  {
+    path: '/share-service/task/:taskId',
+    name: 'shareServiceTaskDetail',
+    component: () => import('@/views/share-service/task-detail/TaskDetail.vue')
   }
 ]
 

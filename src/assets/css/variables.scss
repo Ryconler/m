@@ -22,6 +22,63 @@
   -webkit-line-clamp: 2;
 }
 
+@mixin vanTab(
+  $height: 113px,
+  $padding: 0,
+  $background: #ffffff,
+  $activeColor: #ff5900,
+  $activeSize: 30px,
+  $inactiveColor: #262626,
+  $inactiveSize: 30px,
+  $lineWidth: 28px,
+  $lineHeight: 6px,
+  $lineBackground: linear-gradient(243deg, #ff5900 5%, #ff8800 100%),
+  $lineBottom: 25px,
+  $tabMargin: 0
+) {
+  & > :deep(div) {
+    .van-sticky {
+      .van-tabs__wrap {
+        height: $height;
+        &[class*='van-hairline']::after {
+          border-top: none;
+        }
+        .van-tabs__nav {
+          background: $background;
+          padding: $padding;
+          .van-tab {
+            padding: 0;
+            margin: $tabMargin;
+            .van-tab__text {
+              color: $inactiveColor;
+              font-size: $inactiveSize;
+              font-weight: 400;
+              line-height: 1;
+            }
+          }
+          .van-tab.van-tab--active {
+            .van-tab__text {
+              color: $activeColor;
+              font-size: $activeSize;
+              font-weight: 500;
+            }
+          }
+          .van-tabs__line {
+            width: $lineWidth;
+            height: $lineHeight;
+            background: $lineBackground;
+            bottom: $lineBottom;
+            border-radius: 3px;
+          }
+        }
+      }
+    }
+    .van-sticky--fixed {
+      background: #ffffff;
+    }
+  }
+}
+
 $deep-text-color: #333333;
 $light-text-color: #999999;
 
