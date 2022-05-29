@@ -13,13 +13,13 @@
 </template>
 
 <script lang="ts" setup>
-import { DefaultCity } from '@/utils'
+import { DefaultCity } from '@/constant/city'
 import { useRouter } from 'vue-router'
 
 defineProps({
   cityName: {
     type: String,
-    default: DefaultCity.cityName // eslint-disable-line vue/valid-define-props
+    default: DefaultCity.cityName
   },
   placeholder: {
     type: String,

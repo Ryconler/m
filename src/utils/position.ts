@@ -1,15 +1,9 @@
+import { StorageKeys } from '@/constant/storage'
 import loadScript from 'load-script'
+import { PositionType } from 'types/position'
 import { localStore } from './storage'
 
-export interface LocationType {
-  cityId: string
-  cityName: string
-  lat: string
-  lng: string
-  time?: number
-}
-
-async function getH5Location(): Promise<LocationType | null> {
+async function getH5Position(): Promise<PositionType | null> {
   /* 加载高德地图API */
   function getAMap() {
     return new Promise((resolve, reject) => {
@@ -54,7 +48,7 @@ async function getH5Location(): Promise<LocationType | null> {
               const cityName = city ? city.replace('市', '') : ''
               const lat = data.position.lat
               const lng = data.position.lng
-              const obj: LocationType = {
+              const obj: PositionType = {
                 cityId,
                 cityName,
                 lat,
@@ -66,7 +60,7 @@ async function getH5Location(): Promise<LocationType | null> {
             }
           }) // 返回定位信息
           AMap.event.addListener(geolocation, 'error', (error: any) => {
-            console.log(error)
+            console.error('geolocation error', error)
             reject(null)
           }) // 返回定位出错信息
         })
@@ -74,31 +68,29 @@ async function getH5Location(): Promise<LocationType | null> {
         resolve(null)
       }
     } catch (e) {
-      console.log(e)
+      console.error(e)
       reject(null)
     }
   })
 }
 
-const STORAGE_KEY_LOCATION = 'location'
-
-export async function getLocation(cache = 30): Promise<LocationType | null> {
+export async function getPosition(cache = 30): Promise<PositionType | null> {
   try {
-    const locationStorage = localStore.getItem(STORAGE_KEY_LOCATION)
+    const positionStorage = localStore.getItem(StorageKeys.Position)
     const now = Date.now()
-    let res: LocationType | null
-    if (locationStorage) {
-      if (now - locationStorage.time < cache * 60 * 1000) {
+    let res: PositionType | null
+    if (positionStorage) {
+      if (now - positionStorage.time < cache * 60 * 1000) {
         // 存储30分钟
-        res = locationStorage
+        res = positionStorage
       } else {
-        res = await getH5Location()
+        res = await getH5Position()
       }
     } else {
-      res = await getH5Location()
+      res = await getH5Position()
     }
     if (res) {
-      localStore.setItem(STORAGE_KEY_LOCATION, {
+      localStore.setItem(StorageKeys.Position, {
         ...res,
         time: Date.now()
       })

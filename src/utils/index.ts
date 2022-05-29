@@ -1,6 +1,6 @@
 export * from './helper'
 export * from './storage'
-export * from './location'
+export * from './position'
 export * from './city'
 export * from './cloudbase'
 export * from './http'

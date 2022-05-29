@@ -1,6 +1,5 @@
 import { auth } from '@/utils'
 import { createStore } from 'vuex'
-import home from './home'
 interface stateType {
   userInfo: any
 }
@@ -20,7 +19,5 @@ export default createStore({
       return user
     }
   },
-  modules: {
-    home
-  }
+  modules: {}
 })

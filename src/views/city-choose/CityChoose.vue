@@ -13,14 +13,75 @@
 </template>
 
 <script lang="ts" setup>
-import { getCityChooseData } from '@/composables/city-choose/cityChoose'
+import { getAllCityList } from '@/api/city'
+import { setSelectCity } from '@/utils'
+import { groupBy } from 'lodash'
+import { getAllCityListResultType, GroupedCitysCity } from 'types/city'
 import {
   IndexBar as VanIndexBar,
   IndexAnchor as VanIndexAnchor,
   Cell as VanCell
 } from 'vant'
+import { nextTick, onMounted, ref, Ref } from 'vue'
+import { useRoute } from 'vue-router'
 
-const { groupedCitys, citysKeys, cityClick } = getCityChooseData()
+const route = useRoute()
+
+const groupedCitys: Ref<GroupedCitysCity> = ref({})
+const citysKeys: Ref<string[]> = ref([])
+onMounted(async () => {
+  const allCityList: getAllCityListResultType[] = await getAllCityList()
+  groupedCitys.value = {}
+  groupedCitys.value = groupBy(allCityList, item => {
+    return item.PINYIN && item.PINYIN[0]
+  })
+  for (const citys of Object.values(groupedCitys.value)) {
+    citys.sort((item1, item2) => {
+      if (item1.PINYIN < item2.PINYIN) {
+        return -1
+      } else {
+        return 1
+      }
+    })
+  }
+  citysKeys.value = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
+  ]
+  await nextTick()
+  window.scrollTo(0, 1)
+  window.scrollTo(0, 0)
+})
+
+const cityClick = (city: getAllCityListResultType) => {
+  setSelectCity(city.ID, city.NAME)
+  const referrer = route.query.referrer || document.referrer || '//m.wzmxx.com'
+  location.href = decodeURIComponent(referrer.toString())
+}
 </script>
 
 <style lang="scss" scoped>

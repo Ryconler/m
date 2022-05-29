@@ -1,8 +1,8 @@
 <template>
-  <component :is="componentName" class="classify-sort" :offset-top="offsetTop">
+  <VanSticky ref="classifySort" class="classify-sort" :offset-top="offsetTop">
     <VanDropdownMenu>
       <VanDropdownItem
-        v-if="options.indexOf(FilterTypes.CATEGORY) > -1"
+        v-if="options.indexOf(FilterTypes.Category) > -1"
         ref="categoryDropdownItem"
         disabled
         :lazy-render="false"
@@ -17,34 +17,12 @@
         <template #default>
           <ClassifyCategoryInfos
             :category-infos="allCategoryInfos"
-            :select-category="selectCategory"
             @select="categorySelect"
           ></ClassifyCategoryInfos>
         </template>
       </VanDropdownItem>
       <VanDropdownItem
-        v-if="options.indexOf(FilterTypes.DISTRICT) > -1"
-        ref="districtDropdownItem"
-        disabled
-        :lazy-render="false"
-        @open="classifyOpen"
-        @closed="classifyClosed"
-      >
-        <template #title>
-          <div class="title" @click="districtClick">
-            {{ selectDistrict && selectDistrict.name }}<i></i>
-          </div>
-        </template>
-        <template #default>
-          <ClassifyDistricts
-            :districts="allDistricts"
-            :select-district="selectDistrict"
-            @select="districtSelect"
-          ></ClassifyDistricts>
-        </template>
-      </VanDropdownItem>
-      <VanDropdownItem
-        v-if="options.indexOf(FilterTypes.DISTANCE) > -1"
+        v-if="options.indexOf(FilterTypes.Distance) > -1"
         disabled
       >
         <template #title>
@@ -56,7 +34,7 @@
           </div>
         </template>
       </VanDropdownItem>
-      <VanDropdownItem v-if="options.indexOf(FilterTypes.EARN) > -1" disabled>
+      <VanDropdownItem v-if="options.indexOf(FilterTypes.Earn) > -1" disabled>
         <template #title>
           <div
             :class="['title', filterData.shareAmountSort && 'active']"
@@ -66,7 +44,7 @@
           </div>
         </template>
       </VanDropdownItem>
-      <VanDropdownItem v-if="options.indexOf(FilterTypes.GOOD) > -1" disabled>
+      <VanDropdownItem v-if="options.indexOf(FilterTypes.Good) > -1" disabled>
         <template #title>
           <div
             :class="['title', filterData.storeFavPersonNumSort && 'active']"
@@ -76,7 +54,7 @@
           </div>
         </template>
       </VanDropdownItem>
-      <VanDropdownItem v-if="options.indexOf(FilterTypes.SALE) > -1" disabled>
+      <VanDropdownItem v-if="options.indexOf(FilterTypes.Sale) > -1" disabled>
         <template #title>
           <div
             :class="['title', filterData.saleNumSort && 'active']"
@@ -88,37 +66,34 @@
       </VanDropdownItem>
     </VanDropdownMenu>
     <VanCheckbox
-      v-if="options.indexOf(FilterTypes.EARNONLY) > -1"
+      v-if="options.indexOf(FilterTypes.Earnonly) > -1"
       v-model="shareGoodsOnlyBoolean"
       class="classify-check"
-      checked-color="#ff5900"
-      >仅看xxx的商品</VanCheckbox
+      >仅看有分享赚商品</VanCheckbox
     >
-  </component>
+  </VanSticky>
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref, Ref } from 'vue'
 import {
+  ComponentPublicInstance,
+  nextTick,
+  PropType,
+  ref,
+  Ref,
+  toRefs,
+  watch
+} from 'vue'
+import {
+  Sticky as VanSticky,
   DropdownMenu as VanDropdownMenu,
   DropdownItem as VanDropdownItem,
-  Checkbox as VanCheckbox
+  Checkbox as VanCheckbox,
+  DropdownItemInstance
 } from 'vant'
 import ClassifyCategoryInfos from './ClassifyCategoryInfos.vue'
-import ClassifyDistricts from './ClassifyDistricts.vue'
-import {
-  CategorysType,
-  DistrictType,
-  FilterDataType,
-  FilterTypes
-} from '@/constant/classifySort'
-import {
-  getCategory,
-  getClassify,
-  getDistrict,
-  getFilterComponent,
-  getSort
-} from '@/composables/classify-sort/classifySort'
+import { FilterTypes } from '@/constant/classifySort'
+import { CategorysType, CategoryType, FilterDataType } from 'types/classifySort'
 
 const props = defineProps({
   /* 显示的选项 */
@@ -147,17 +122,6 @@ const props = defineProps({
       return []
     }
   },
-  districts: {
-    type: Array as PropType<DistrictType[]>,
-    default() {
-      return []
-    }
-  },
-  /* 是否开启吸顶 */
-  sticky: {
-    type: Boolean,
-    default: true
-  },
   /* 触发吸顶需要滚动的距离 */
   stickyDistance: {
     type: Number,
@@ -169,33 +133,231 @@ const props = defineProps({
     default: 0
   }
 })
+const {
+  options,
+  immediate,
+  initialFilter,
+  categoryInfos,
+  stickyDistance,
+  offsetTop
+} = toRefs(props)
+
 const emit = defineEmits(['filter-change'])
 
-const { componentName, filterData, shareGoodsOnlyBoolean, resetFilterData } =
-  getFilterComponent(props, emit)
+const classifySort: Ref<ComponentPublicInstance | null> = ref(null)
 
-const { classifyOpen, classifyClosed } = getClassify(props)
+/* 设置父元素的最低高度 */
+watch(
+  offsetTop,
+  () => {
+    nextTick(() => {
+      if (classifySort.value) {
+        const parentElement = classifySort.value.$el.parentElement
+        parentElement.style.minHeight = `calc(100vh - ${
+          Number(offsetTop.value) - 1
+        }px)`
+      }
+    })
+  },
+  {
+    immediate: true
+  }
+)
 
-const categoryDropdownItem: Ref<any> = ref(null)
-const districtDropdownItem: Ref<any> = ref(null)
+const { filterData, shareGoodsOnlyBoolean, resetFilterData } = (() => {
+  const initFilterData: FilterDataType = {}
+  if (options.value.indexOf(FilterTypes.Distance) > -1) {
+    initFilterData.distanceSort = false
+  }
+  if (options.value.indexOf(FilterTypes.Good) > -1) {
+    initFilterData.storeFavPersonNumSort = false
+  }
+  if (options.value.indexOf(FilterTypes.Earn) > -1) {
+    initFilterData.shareAmountSort = false
+  }
+  if (options.value.indexOf(FilterTypes.Sale) > -1) {
+    initFilterData.saleNumSort = false
+  }
+  if (options.value.indexOf(FilterTypes.Earnonly) > -1) {
+    initFilterData.shareGoodsOnly = 0
+  }
+  const filterData: Ref<FilterDataType> = ref({
+    ...initFilterData,
+    ...initialFilter.value
+  })
+  const shareGoodsOnlyBoolean = ref(!!filterData.value.shareGoodsOnly)
+  watch(shareGoodsOnlyBoolean, val => {
+    filterData.value.shareGoodsOnly = val ? 1 : 0
+  })
+  watch(
+    filterData,
+    () => {
+      emit('filter-change', filterData.value)
+      // 当前滚动条位置在下面，重新搜索后需要吸顶
+      if (window.scrollY > stickyDistance.value) {
+        window.scrollTo(0, Number(stickyDistance.value) + 1)
+      }
+    },
+    {
+      deep: true,
+      immediate: immediate.value
+    }
+  )
+  const resetFilterData = () => {
+    filterData.value = {
+      ...initFilterData,
+      ...initialFilter.value
+    }
+    shareGoodsOnlyBoolean.value = !!filterData.value.shareGoodsOnly
+  }
+  return {
+    filterData,
+    shareGoodsOnlyBoolean,
+    resetFilterData
+  }
+})()
+
+const { classifyOpen, classifyClosed } = (() => {
+  /* 菜单打开前吸顶 */
+  const classifyOpen = () => {
+    if (window.scrollY < stickyDistance.value) {
+      window.scrollTo(0, stickyDistance.value + 1)
+    } else {
+      /* 解决VanDropdownMenu手动滚动吸顶后，menu的滚动位置不再改变导致offset不会更新，导致下拉菜单top位置不对的问题
+          源码：/node_modules/vant/es/dropdown-menu/DropdownMenu.js
+          var onScroll = () => {
+            if (opened.value) {
+              updateOffset();
+            }
+          };
+          解决方法：手动给Menu制造一个滚动，触发updateOffset()
+        */
+      window.scrollTo(0, window.scrollY - 1)
+      window.scrollTo(0, window.scrollY + 1)
+    }
+  }
+  /* 菜单关闭后不恢复 */
+  const classifyClosed = () => {}
+  return {
+    classifyOpen,
+    classifyClosed
+  }
+})()
+
+const categoryDropdownItem = ref()
 const {
   allCategoryInfos,
-  selectCategory,
   selectCategoryTitle,
   categoryClick,
-  categorySelect
-} = getCategory(props, filterData, [categoryDropdownItem, districtDropdownItem])
+  categorySelect,
+  resetCategory
+} = (() => {
+  const firstCategory = {
+    title: '全部',
+    list: [
+      {
+        title: '全部',
+        categoryId: initialFilter.value.level4CategoryId
+          ? initialFilter.value.level4CategoryId.join(',')
+          : '',
+        selected: true
+      }
+    ]
+  }
+  // 所有可选品类
+  const allCategoryInfos: Ref<CategorysType[]> = ref([
+    firstCategory,
+    ...categoryInfos.value
+  ])
+  watch(categoryInfos, () => {
+    allCategoryInfos.value = [firstCategory, ...categoryInfos.value]
+  })
+  // 下拉框上显示的标题
+  const selectCategoryTitle = ref('全部')
+  // 下拉框点击
+  const categoryClick = () => {
+    categoryDropdownItem.value && categoryDropdownItem.value.toggle()
+  }
+  // 品类项选择
+  const categorySelect = (category: CategoryType) => {
+    allCategoryInfos.value.forEach(_categoryInfo => {
+      _categoryInfo.list.forEach(_category => {
+        if (_category === category) {
+          _category.selected = true
+          selectCategoryTitle.value =
+            _category.title == '全部' ? _categoryInfo.title : _category.title
+        } else {
+          _category.selected = false
+        }
+      })
+    })
+    if (category.categoryId) {
+      filterData.value.level4CategoryId = category.categoryId.split(',')
+    } else {
+      delete filterData.value.level4CategoryId
+    }
+    categoryDropdownItem.value && categoryDropdownItem.value.toggle(false)
+  }
+  // 重置下拉框显示
+  const resetCategory = () => {
+    allCategoryInfos.value.forEach(_categoryInfo => {
+      _categoryInfo.list.forEach(_category => {
+        _category.selected = false
+      })
+    })
+    allCategoryInfos.value[0].list[0].selected = true
+    selectCategoryTitle.value = '全部'
+  }
 
-const { allDistricts, selectDistrict, districtClick, districtSelect } =
-  getDistrict(props, filterData, [districtDropdownItem, categoryDropdownItem])
+  return {
+    allCategoryInfos,
+    selectCategoryTitle,
+    categoryClick,
+    categorySelect,
+    resetCategory
+  }
+})()
 
-const { sortToggle } = getSort(props, filterData, [
-  categoryDropdownItem,
-  districtDropdownItem
-])
+const { sortToggle } = (() => {
+  /* 排序按钮点击切换 */
+  const sortToggle = (sortKey: string) => {
+    const newSort = !filterData.value[sortKey]
+    if (
+      Object.prototype.hasOwnProperty.call(filterData.value, 'distanceSort')
+    ) {
+      filterData.value.distanceSort = false
+    }
+    if (
+      Object.prototype.hasOwnProperty.call(filterData.value, 'shareAmountSort')
+    ) {
+      filterData.value.shareAmountSort = false
+    }
+    if (
+      Object.prototype.hasOwnProperty.call(
+        filterData.value,
+        'storeFavPersonNumSort'
+      )
+    ) {
+      filterData.value.storeFavPersonNumSort = false
+    }
+    if (Object.prototype.hasOwnProperty.call(filterData.value, 'saleNumSort')) {
+      filterData.value.saleNumSort = false
+    }
+    filterData.value[sortKey] = newSort
+    // 关闭所有下拉菜单
+    categoryDropdownItem.value && categoryDropdownItem.value.toggle(false)
+  }
+  return {
+    sortToggle
+  }
+})()
 
 defineExpose({
-  resetFilterData
+  allCategoryInfos,
+  reset() {
+    resetFilterData()
+    resetCategory()
+  }
 })
 </script>
 
@@ -205,7 +367,7 @@ defineExpose({
   .van-dropdown-menu {
     :deep(.van-dropdown-menu__bar) {
       height: auto;
-      padding-left: 24px;
+      padding: 0 24px;
       overflow: hidden;
       flex-wrap: nowrap;
       box-shadow: none;
@@ -271,7 +433,7 @@ defineExpose({
     justify-content: center;
     background: #fff3ed;
     overflow: initial;
-    border: 2px solid #ff5900;
+    border: 1px solid #ff5900;
     border-radius: 6px;
     :deep(.van-checkbox__icon) {
       height: auto;
@@ -285,6 +447,12 @@ defineExpose({
           font-size: 20px;
           line-height: 28px;
         }
+      }
+    }
+    :deep(.van-checkbox__icon--checked) {
+      i {
+        border-color: #ff5900;
+        background-color: #ff5900;
       }
     }
     :deep(.van-checkbox__label) {

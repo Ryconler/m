@@ -23,9 +23,9 @@
 <script lang="ts" setup>
 import { Search as VanSearch, Toast } from 'vant'
 import clearIcon from '@/assets/images/search-bar/icon-clear.png'
-import { getSearchBarData } from '@/composables/search-bar/searchBar'
+import { ref } from 'vue'
 
-const { searchValue } = getSearchBarData()
+const searchValue = ref('')
 const searchClick = () => {
   Toast(searchValue.value)
 }

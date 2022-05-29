@@ -60,9 +60,9 @@ import {
   Toast
 } from 'vant'
 import { auth, localStore } from '@/utils'
-import { STORAGE_KEYS } from '@/constant/storage'
-import { checkUserExist } from '@/api/common'
+import { StorageKeys } from '@/constant/storage'
 import { useRoute } from 'vue-router'
+import { checkUserExist } from '@/api/user'
 
 const phoneNumber = ref('')
 const phonePattern = ref(/^1[0-9]{10}$/)
@@ -83,7 +83,7 @@ const phoneUpdate = (val: string) => {
   }
 }
 
-let sendTime = localStore.getItem(STORAGE_KEYS.SEND_TIME)
+let sendTime = localStore.getItem(StorageKeys.SendTime)
 const nowTime = Date.now()
 if (sendTime) {
   let diffTime = nowTime - sendTime
@@ -108,7 +108,7 @@ const sendClick = () => {
   if (sendText.value == '获取验证码' && loginForm.value) {
     loginForm.value.validate('手机号').then(() => {
       sendTime = Date.now()
-      localStore.setItem(STORAGE_KEYS.SEND_TIME, sendTime)
+      localStore.setItem(StorageKeys.SendTime, sendTime)
       countDown(60)
       // 发送短信验证码
       auth.sendPhoneCode(phoneNumber.value)

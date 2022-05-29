@@ -107,6 +107,10 @@ img {
   border: 0;
   max-width: 100%;
 }
+img,
+input {
+  vertical-align: middle;
+}
 button {
   -webkit-appearance: none;
   background: 0 0;

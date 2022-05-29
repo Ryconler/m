@@ -5,5 +5,28 @@
 </template>
 
 <script lang="ts" setup>
-import SearchBar from '@/components/search-bar/SearchBar.vue'
+import { getSelectCity, setSelectCity } from '@/utils'
+import { onMounted, Ref, ref } from 'vue'
+import { getLocation } from '@/composables/common'
+import { DefaultCity } from '@/constant/city'
+import { CityType } from 'types/city'
+
+const selectCity: Ref<CityType> = ref(DefaultCity)
+onMounted(async () => {
+  const cookieCity = getSelectCity()
+  if (cookieCity) {
+    selectCity.value = cookieCity
+  } else {
+    const { position } = await getLocation()
+    if (position.value != null) {
+      selectCity.value = {
+        cityId: position.value.cityId,
+        cityName: position.value.cityName
+      }
+    } else {
+      selectCity.value = DefaultCity
+    }
+    setSelectCity(selectCity.value.cityId, selectCity.value.cityName)
+  }
+})
 </script>

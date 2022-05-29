@@ -13,7 +13,7 @@ export function setLoading(isShow = true) {
   }
 }
 
-export async function ensureLogin(url?: string) {
+export function ensureLogin(url?: string) {
   const uid = jsCookie.get('uid')
   const skey = jsCookie.get('skey')
   if (uid && skey) {
@@ -23,8 +23,6 @@ export async function ensureLogin(url?: string) {
     }
   }
   const referUrl = url || location.href
-  location.href = `//passport.cekid.com/passport/login?cmd=login&referer=${encodeURIComponent(
-    referUrl
-  )}`
+  location.href = `/login&referer=${encodeURIComponent(referUrl)}`
   throw {}
 }

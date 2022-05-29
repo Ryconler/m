@@ -1,10 +1,9 @@
 <template>
-  <router-view v-if="$route.meta.keepAlive" v-slot="{ Component }">
+  <router-view v-slot="{ Component }">
     <keep-alive>
       <component :is="Component" />
     </keep-alive>
   </router-view>
-  <router-view v-else />
 </template>
 
 <script lang="ts">

@@ -11,11 +11,7 @@
           v-for="(item2, index2) in item.list"
           :key="index2"
           class="category"
-          :class="
-            selectCategory &&
-            item2.categoryId === selectCategory.categoryId &&
-            item2.title === selectCategory.title && ['active', 'pf-medium']
-          "
+          :class="item2.selected && ['active', 'pf-medium']"
           @click="selectClick(item2)"
         >
           {{ item2.title }}
@@ -26,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CategorysType, CategoryType } from '@/constant/classifySort'
+import { CategorysType, CategoryType } from 'types/classifySort'
 import { PropType } from 'vue'
 
 defineProps({
@@ -34,12 +30,6 @@ defineProps({
     type: Array as PropType<CategorysType[]>,
     default() {
       return []
-    }
-  },
-  selectCategory: {
-    type: Object as PropType<CategoryType>,
-    default() {
-      return null
     }
   }
 })

@@ -4,16 +4,16 @@ import { ConfigProvider } from 'vant'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { setupComponents } from './plugins/components'
-import { setupDirectives } from './plugins/directives'
-import { setupMethods } from './plugins/middlewares'
-import { setupMixins } from './plugins/mixins'
+import components from './plugins/components'
+import directives from './plugins/directives'
+import middlewares from './plugins/middlewares'
+import mixins from './plugins/mixins'
 import '@/assets/css/normalize.scss'
 
 const app = createApp(App)
-setupComponents(app)
-setupDirectives(app)
-setupMethods(app)
-setupMixins(app)
+app.use(components)
+app.use(directives)
+app.use(middlewares)
+app.use(mixins)
 app.use(ConfigProvider)
 app.use(store).use(router).mount('#app')

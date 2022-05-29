@@ -1,64 +1,25 @@
-export function storageFactory(storage: Storage) {
-  let inMemoryStorage: any = {}
-  function isSupported() {
-    try {
-      const testKey = '__some_random_key_you_are_not_going_to_use__'
-      storage.setItem(testKey, testKey)
-      storage.removeItem(testKey)
-      return true
-    } catch (e) {
-      return false
-    }
-  }
-
+function storageFactory(storage: Storage) {
   function clear() {
-    if (isSupported()) {
-      storage.clear()
-    } else {
-      inMemoryStorage = {}
-    }
+    storage.clear()
   }
 
   function getItem(name: string) {
-    if (isSupported()) {
-      return JSON.parse(storage.getItem(name) as string)
-    }
-    if (inMemoryStorage.hasOwnProperty(name)) {
-      return inMemoryStorage[name]
-    }
-    return null
-  }
-
-  function key(index: any) {
-    if (isSupported()) {
-      return storage.key(index)
-    } else {
-      return Object.keys(inMemoryStorage)[index] || null
-    }
+    return JSON.parse(storage.getItem(name) as string)
   }
 
   function removeItem(name: string) {
-    if (isSupported()) {
-      storage.removeItem(name)
-    } else {
-      delete inMemoryStorage[name]
-    }
+    storage.removeItem(name)
   }
 
   function setItem(name: string, value: any) {
-    if (isSupported()) {
-      storage.setItem(name, JSON.stringify(value))
-    } else {
-      inMemoryStorage[name] = String(value)
-    }
+    storage.setItem(name, JSON.stringify(value))
   }
 
   return {
     getItem,
     setItem,
     removeItem,
-    clear,
-    key
+    clear
   }
 }
 
