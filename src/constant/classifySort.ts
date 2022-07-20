@@ -1,4 +1,4 @@
-import { CategorysType } from 'types/classifySort'
+import { CategorysType } from '@/types/classifySort'
 
 export const CategoryAll: CategorysType = {
   title: '全部',

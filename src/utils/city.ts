@@ -1,6 +1,6 @@
 import jsCookie from 'js-cookie'
 import { CookieKeys } from '@/constant/storage'
-import { CityType } from 'types/city'
+import { CityType } from '@/types/city'
 
 export function getSelectCity(): CityType | null {
   const selectCity = jsCookie.get(CookieKeys.City) || ''

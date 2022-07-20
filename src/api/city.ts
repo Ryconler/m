@@ -1,7 +1,7 @@
 import urlPrefixes from '@/constant/urlPrefixes'
 import { ajax } from '@/utils'
-import { getAllCityListResultType } from 'types/city'
-import { ResultType } from 'types/http'
+import { getAllCityListResultType } from '@/types/city'
+import { ResultType } from '@/types/http'
 
 const api = {
   getAllCityList: `${urlPrefixes.mapi}/city/getAllCityList`

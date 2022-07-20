@@ -75,7 +75,7 @@ import {
 } from 'vant'
 import ShareSpuItem from './ShareSpuItem.vue'
 import { nextTick, onMounted, PropType, ref, Ref, toRefs } from 'vue'
-import { CityType } from 'types/city'
+import { CityType } from '@/types/city'
 import { DefaultCity } from '@/constant/city'
 import { queryShareConfig } from '@/api/shareEarn'
 

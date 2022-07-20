@@ -177,7 +177,7 @@ import {
 } from 'vant'
 import { useRoute } from 'vue-router'
 
-import { getLocation } from '@/composables/common'
+import { useLocation } from '@/composables/common'
 import { queryShareTask } from '@/api/shareService'
 import { get } from 'lodash'
 import { MaterialType } from '@/constant/shareService'
@@ -218,7 +218,7 @@ onActivated(async () => {
   taskDetail.value = null
   if (!taskDetail.value) {
     // 页面刷新
-    const { cityInfo } = getLocation()
+    const { cityInfo } = useLocation()
     const taskList =
       (await queryShareTask(cityInfo.value.cityId)).shareTaskList || []
     const taskId = Number(route.params.taskId)

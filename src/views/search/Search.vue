@@ -7,9 +7,9 @@
 <script lang="ts" setup>
 import { getSelectCity, setSelectCity } from '@/utils'
 import { onMounted, Ref, ref } from 'vue'
-import { getLocation } from '@/composables/common'
+import { useLocation } from '@/composables/common'
 import { DefaultCity } from '@/constant/city'
-import { CityType } from 'types/city'
+import { CityType } from '@/types/city'
 
 const selectCity: Ref<CityType> = ref(DefaultCity)
 onMounted(async () => {
@@ -17,7 +17,7 @@ onMounted(async () => {
   if (cookieCity) {
     selectCity.value = cookieCity
   } else {
-    const { position } = await getLocation()
+    const { position } = await useLocation()
     if (position.value != null) {
       selectCity.value = {
         cityId: position.value.cityId,

@@ -1,8 +1,8 @@
 import urlPrefixes from '@/constant/urlPrefixes'
+import { ResultType } from '@/types/http'
+import { PositionType } from '@/types/position'
 import { ajax, getPosition, http } from '@/utils'
 import qs from 'query-string'
-import { ResultType } from 'types/http'
-import { PositionType } from 'types/position'
 
 const api = {
   getPhotographyConfig: `${urlPrefixes.cms999}/photography-config.json`,

@@ -1,6 +1,7 @@
 export default {
   cloudbaseApi: `https://wzmxx-cloudbase-6gq43u4scecde6fc-1257031685.ap-shanghai.service.tcloudbase.com`,
-  mapi: `//m-api.wzmxx.com`,
+  mapi: `https://m-api.wzmxx.com`,
+  // mapi: `http://localhost:5010`,
 
   cms999: `https://cms.cekid.com/publish/999`,
   svsesapi: `https://svsesapi.haiziwang.com/svses-api/api`,

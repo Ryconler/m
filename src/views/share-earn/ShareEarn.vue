@@ -28,10 +28,10 @@
 import { Sticky as VanSticky } from 'vant'
 import ShareEarnMain from './ShareEarnMain.vue'
 import ShareEarnTabs from './ShareEarnTabs.vue'
-import { getLocation } from '@/composables/common'
+import { useLocation } from '@/composables/common'
 import { useRouter } from 'vue-router'
 
-const { position, cityInfo, locationLoaded } = getLocation()
+const { position, cityInfo, locationLoaded } = useLocation()
 
 const router = useRouter()
 

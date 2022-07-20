@@ -23,11 +23,11 @@ import ShareServiceTaskItem from '../ShareServiceTaskItem.vue'
 import iconFail from '@/assets/images/empty-error/icon-fail.png'
 import { useStore } from 'vuex'
 import { queryShareTask } from '@/api/shareService'
-import { getLocation } from '@/composables/common'
+import { useLocation } from '@/composables/common'
 
 setLoading(true)
 
-const { cityInfo } = getLocation()
+const { cityInfo } = useLocation()
 
 const loading = ref(true)
 const taskList: Ref<any[]> = ref([])

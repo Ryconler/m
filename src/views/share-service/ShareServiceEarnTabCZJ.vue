@@ -81,12 +81,12 @@ import {
 } from 'vue'
 
 import ShareServiceEarnSpu from './ShareServiceEarnSpu.vue'
-import { PositionType } from 'types/position'
-import { CityType } from 'types/city'
+import { PositionType } from '@/types/position'
+import { CityType } from '@/types/city'
 import { DefaultCity } from '@/constant/city'
 import { queryShareSpus } from '@/api/shareService'
 import { FilterTypes } from '@/constant/classifySort'
-import { FilterDataType } from 'types/classifySort'
+import { FilterDataType } from '@/types/classifySort'
 
 const props = defineProps({
   position: {

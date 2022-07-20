@@ -1,4 +1,4 @@
-import { CityType } from 'types/city'
+import { CityType } from '@/types/city'
 
 export const DefaultCity: CityType = {
   cityName: '南京',

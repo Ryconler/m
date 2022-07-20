@@ -43,20 +43,20 @@ import {
   Sticky as VanSticky
 } from 'vant'
 import { setLoading } from '@/utils'
-import { getLocation } from '@/composables/common'
+import { useLocation } from '@/composables/common'
 import ShareServiceTask from './ShareServiceTask.vue'
 import ShareServiceEarn from './ShareServiceEarn.vue'
 import { nextTick, onMounted, Ref, ref } from 'vue'
 import { queryShareTask } from '@/api/shareService'
 import { useStore } from 'vuex'
-import { CityType } from 'types/city'
+import { CityType } from '@/types/city'
 import { queryShareConfig } from '@/api/shareEarn'
 
 setLoading(true)
 
 const store = useStore()
 
-const { position, cityInfo, locationLoaded } = getLocation()
+const { position, cityInfo, locationLoaded } = useLocation()
 const banners: Ref<{ rotationPic: string; jumpUrl: string }[]> = ref([])
 const shareTasks: Ref<any[]> = ref([])
 const shareTasksLoaded = ref(false)

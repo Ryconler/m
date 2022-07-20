@@ -2,7 +2,7 @@ import urlPrefixes from '@/constant/urlPrefixes'
 import { ajax, http } from '@/utils'
 import jsCookie from 'js-cookie'
 import qs from 'query-string'
-import { ResultType } from 'types/http'
+import { ResultType } from '@/types/http'
 
 const api = {
   queryShareTask: `${urlPrefixes.soperationapi}/soperation-api/shareTask/queryShareTaskByCity.do`,

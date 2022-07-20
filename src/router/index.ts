@@ -59,6 +59,27 @@ const routes: Array<RouteRecordRaw> = [
     path: '/share-service/task/:taskId',
     name: 'shareServiceTaskDetail',
     component: () => import('@/views/share-service/task-detail/TaskDetail.vue')
+  },
+  /* x元购活动详情页 */
+  {
+    path: '/xbuy-event/:eventId',
+    name: 'xbuyEvent',
+    component: () => import('@/views/xbuy-event/XBuyEvent.vue'),
+    meta: { keepAlive: true }
+  },
+  /* 图片全屏预览页 */
+  {
+    path: '/fullscreen-preview',
+    name: 'fullscreenPreview',
+    component: () => import('@/views/fullscreen-preview/FullscreenPreview.vue'),
+    meta: { keepAlive: true }
+  },
+  /* 错误提示页 */
+  {
+    path: '/tip',
+    name: 'tip',
+    component: () => import('@/views/tip/Tip.vue'),
+    meta: { keepAlive: true }
   }
 ]
 

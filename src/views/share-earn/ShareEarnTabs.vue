@@ -161,8 +161,8 @@ import {
   toRefs
 } from 'vue'
 import ShareSpuItem from './ShareSpuItem.vue'
-import { PositionType } from 'types/position'
-import { CityType } from 'types/city'
+import { PositionType } from '@/types/position'
+import { CityType } from '@/types/city'
 import { DefaultCity } from '@/constant/city'
 import { rem2RealPx, getShareAmount } from '@/utils'
 import { queryAllSpus, queryShareList } from '@/api/shareEarn'
