@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { ResultType } from 'types/http'
+import { ResultType } from '@/types/http'
 import { ComponentInstance } from 'vant/lib/utils'
 
 function createService(options: AxiosRequestConfig) {

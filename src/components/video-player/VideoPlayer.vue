@@ -6,7 +6,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Popup as VanPopup } from 'vant'
 import { ref, toRefs, watch } from 'vue'
 
 const props = defineProps({

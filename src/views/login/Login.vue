@@ -53,12 +53,7 @@
 </template>
 <script lang="ts" setup>
 import { Ref, ref } from 'vue'
-import {
-  Form as VanForm,
-  Field as VanField,
-  Button as VanButton,
-  Toast
-} from 'vant'
+import { Toast } from 'vant'
 import { auth, localStore } from '@/utils'
 import { StorageKeys } from '@/constant/storage'
 import { useRoute } from 'vue-router'
@@ -73,7 +68,7 @@ const loginText = ref('登录')
 
 const phoneUpdate = (val: string) => {
   if (val.length == 11) {
-    checkUserExist(val).then((res) => {
+    checkUserExist(val).then(res => {
       if (res) {
         loginText.value = '登录'
       } else {

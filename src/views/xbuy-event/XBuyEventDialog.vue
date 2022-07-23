@@ -99,7 +99,6 @@
   </VanOverlay>
 </template>
 <script lang="ts" setup>
-import { Overlay as VanOverlay } from 'vant'
 import { DialogShowType, EventType } from '@/constant/xbuyEvent'
 import { computed, PropType, toRefs } from 'vue'
 import {

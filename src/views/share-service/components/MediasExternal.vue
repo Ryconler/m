@@ -51,20 +51,9 @@
 </template>
 <script lang="ts" setup>
 import { queryShareKey } from '@/api/common'
-import {
-  MaterialType,
-  ShareKeyLinkTypeWorkChat,
-  ShareKeyTokenWorkChat,
-  ShareKeyToolType,
-  ShareMaterialType
-} from '@/constant/shareService'
-import {
-  convertImageBase64ToFile,
-  getPosterBase64,
-  sleep,
-  videoPreview
-} from '@/utils'
-import { ImagePreview, Overlay as VanOverlay, Toast } from 'vant'
+import { MaterialType, ShareMaterialType } from '@/constant/shareService'
+import { getPosterBase64, sleep, videoPreview } from '@/utils'
+import { ImagePreview, Toast } from 'vant'
 import { toRefs, ref, PropType, Ref, computed, watch } from 'vue'
 
 const props = defineProps({

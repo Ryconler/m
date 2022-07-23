@@ -4,7 +4,6 @@
   </VanEmpty>
 </template>
 <script lang="ts" setup>
-import { Empty as VanEmpty } from 'vant'
 import { computed, toRefs } from 'vue'
 import imageEmpty from '@/assets/images/empty-error/icon-empty.png'
 import imageError from '@/assets/images/empty-error/icon-error.png'

@@ -137,13 +137,7 @@ import {
   nextTick,
   ComponentPublicInstance
 } from 'vue'
-import {
-  Sticky as VanSticky,
-  DropdownMenu as VanDropdownMenu,
-  DropdownItem as VanDropdownItem,
-  Checkbox as VanCheckbox,
-  DropdownItemInstance
-} from 'vant'
+import { DropdownItemInstance } from 'vant'
 import ClassifyCategoryInfos from './ClassifyCategoryInfos.vue'
 import ClassifyDistricts from './ClassifyDistricts.vue'
 import ClassifyStores from './ClassifyStores.vue'

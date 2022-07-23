@@ -1,18 +1,10 @@
-import { queryShareKey } from '@/api/common'
 import { queryAllActivities, queryShareActivities } from '@/api/shareService'
 import { FilterTypes } from '@/constant/classifySort'
-import {
-  ShareActivityType,
-  ShareKeyLinkTypeRKHY,
-  ShareKeyLinkTypeWorkChat,
-  ShareKeyTokenWorkChat,
-  ShareKeyToolType,
-  TrackTerm
-} from '@/constant/shareService'
+import { ShareActivityType } from '@/constant/shareService'
 import { CityType } from '@/types/city'
 import { FilterDataType, StoreType } from '@/types/classifySort'
 import { PositionType } from '@/types/position'
-import { getMinicardUrl, replaceUrlKey, sleep } from '@/utils'
+import { getMinicardUrl, sleep } from '@/utils'
 import { ImagePreview, Toast } from 'vant'
 import { computed, reactive, Ref, ref } from 'vue'
 

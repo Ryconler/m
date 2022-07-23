@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Search as VanSearch, Toast } from 'vant'
+import { Toast } from 'vant'
 import clearIcon from '@/assets/images/search-bar/icon-clear.png'
 import { ref } from 'vue'
 

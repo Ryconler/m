@@ -100,7 +100,6 @@
   </VanTab>
 </template>
 <script lang="ts" setup>
-import { Tab as VanTab, List as VanList, Overlay as VanOverlay } from 'vant'
 import {
   useEarnDetail,
   useInsuranceClick,

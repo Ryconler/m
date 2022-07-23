@@ -94,7 +94,6 @@
 </template>
 
 <script lang="ts" setup>
-import { Tabs as VanTabs, Tab as VanTab } from 'vant'
 import { Ref, ref, onMounted, computed } from 'vue'
 import { setLoading } from '@/utils'
 import ShareServiceTaskItem from '../ShareServiceTaskItem.vue'
@@ -111,7 +110,7 @@ const route = useRoute()
 const initTab = ShareTaskBusinessType.Yunchan
 const selectedTab = ref(initTab)
 
-const { cityInfo } = useLocation({ districts: false })
+const { cityInfo } = useLocation({ districts: false, position: false })
 
 const cityId = computed(() => {
   return <string>route.query.cityId || cityInfo.value.cityId

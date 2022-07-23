@@ -41,12 +41,7 @@
 <script lang="ts" setup>
 import { MaterialType } from '@/constant/shareService'
 import { convertImageBase64ToFile, copyTextClipboard } from '@/utils'
-import {
-  Popup as VanPopup,
-  Swipe as VanSwipe,
-  SwipeItem as VanSwipeItem,
-  Toast
-} from 'vant'
+import { Toast } from 'vant'
 import { PropType, ref, toRefs, watch } from 'vue'
 
 const props = defineProps({

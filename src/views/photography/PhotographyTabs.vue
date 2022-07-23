@@ -63,11 +63,7 @@ import {
   watch,
   watchEffect
 } from 'vue'
-import {
-  Tabs as VanTabs,
-  Tab as VanTab,
-  ImagePreview as VanImagePreview
-} from 'vant'
+import { ImagePreview as VanImagePreview } from 'vant'
 import TabsContent from './PhotographyTabsContent.vue'
 import TabsStores from './PhotographyTabsStores.vue'
 import { getMinPriceSpu } from '@/api/photography'

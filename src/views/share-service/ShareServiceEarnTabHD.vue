@@ -4,7 +4,7 @@
     name="huodong"
     :style="`min-height: calc(100vh - ${Number(classifySortOffsetTop) - 1}px)`"
   >
-    <ClassifySort2
+    <ClassifySort
       ref="classifySort"
       immediate
       :options="filterOptions"
@@ -13,7 +13,7 @@
       :sticky-distance="classifySortStickyDistance"
       :offset-top="classifySortOffsetTop"
       @filter-change="filterChange"
-    ></ClassifySort2>
+    ></ClassifySort>
     <EmptyError
       v-if="!activityList.loading && activityList.list.length == 0"
       :type="activityList.error ? 'error' : 'empty'"
@@ -110,7 +110,6 @@
   </VanTab>
 </template>
 <script lang="ts" setup>
-import { Tab as VanTab, List as VanList } from 'vant'
 import { getYenPrice } from '@/utils'
 import { PropType, ref, toRefs } from 'vue'
 import {

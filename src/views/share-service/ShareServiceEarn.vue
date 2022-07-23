@@ -36,8 +36,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Tabs as VanTabs } from 'vant'
-import {} from '@/utils'
 import { computed, PropType, ref, toRefs } from 'vue'
 import ShareServiceEarnTabYC from './ShareServiceEarnTabYC.vue'
 import ShareServiceEarnTabCZJ from './ShareServiceEarnTabCZJ.vue'

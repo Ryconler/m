@@ -4,13 +4,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Image as VanImage } from 'vant'
 import { parseInt } from 'lodash'
 
 export default defineComponent({
-  components: {
-    [VanImage.name]: VanImage
-  },
   props: {
     width: {
       type: [String, Number],

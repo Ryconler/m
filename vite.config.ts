@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
-import styleImport, { VantResolve } from 'vite-plugin-style-import'
+import Components from 'unplugin-vue-components/vite'
+import { VantResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import autoprefixer from 'autoprefixer'
 import pxtorem from 'postcss-pxtorem'
@@ -29,8 +30,8 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       vue(),
       legacy(),
-      styleImport({
-        resolves: [VantResolve()]
+      Components({
+        resolvers: [VantResolver()] // vant组件的按需引入支持
       })
     ],
     base: '/', // 设置打包路径
@@ -56,7 +57,7 @@ export default defineConfig(({ command, mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
-        types: path.resolve(__dirname, 'types')
+        '~@': path.resolve(__dirname, 'src')
       }
     },
     server: {

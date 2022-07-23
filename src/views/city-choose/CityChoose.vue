@@ -17,11 +17,6 @@ import { getAllCityList } from '@/api/city'
 import { setSelectCity } from '@/utils'
 import { groupBy } from 'lodash'
 import { getAllCityListResultType, GroupedCitysCity } from '@/types/city'
-import {
-  IndexBar as VanIndexBar,
-  IndexAnchor as VanIndexAnchor,
-  Cell as VanCell
-} from 'vant'
 import { nextTick, onMounted, ref, Ref } from 'vue'
 import { useRoute } from 'vue-router'
 

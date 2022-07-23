@@ -64,13 +64,7 @@ import {
   sleep,
   videoPreview
 } from '@/utils'
-import {
-  ImagePreview,
-  Popup as VanPopup,
-  Swipe as VanSwipe,
-  SwipeItem as VanSwipeItem,
-  Toast
-} from 'vant'
+import { ImagePreview, Toast } from 'vant'
 import { nextTick, PropType, ref, toRefs, watch } from 'vue'
 
 const props = defineProps({

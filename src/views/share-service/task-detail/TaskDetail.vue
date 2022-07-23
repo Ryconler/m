@@ -161,7 +161,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Overlay as VanOverlay } from 'vant'
 import {
   copyTextClipboard,
   setLoading,
@@ -171,11 +170,7 @@ import {
   getImageBase64
 } from '@/utils'
 import { computed, onMounted, Ref, ref } from 'vue'
-import {
-  Checkbox as VanCheckbox,
-  Toast,
-  ImagePreview as VanImagePreview
-} from 'vant'
+import { Toast } from 'vant'
 import { useRoute } from 'vue-router'
 import {
   MaterialType,

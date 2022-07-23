@@ -11,7 +11,6 @@
 </template>
 <script lang="ts" setup>
 import { PropType } from 'vue'
-import { Swipe as VanSwipe, SwipeItem as VanSwipeItem } from 'vant'
 
 defineProps({
   banners: {

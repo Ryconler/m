@@ -51,7 +51,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, Ref } from 'vue'
 import { setLoading } from '@/utils'
-import { Overlay as VanOverlay } from 'vant'
 import XBuyEventHeader from './XBuyEventHeader.vue'
 import XBuyEventStatus from './XBuyEventStatus.vue'
 import XBuyEventRecord from './XBuyEventRecord.vue'

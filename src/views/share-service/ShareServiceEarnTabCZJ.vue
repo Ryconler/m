@@ -76,7 +76,6 @@
   </VanTab>
 </template>
 <script lang="ts" setup>
-import { Tab as VanTab, List as VanList } from 'vant'
 import { getShareAmount } from '@/utils'
 import { PropType, ref, toRefs } from 'vue'
 

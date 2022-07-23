@@ -36,7 +36,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Swipe as VanSwipe, SwipeItem as VanSwipeItem } from 'vant'
 import { setLoading } from '@/utils'
 import { useLocation } from '@/composables/common'
 import ShareServiceTask from './ShareServiceTask.vue'

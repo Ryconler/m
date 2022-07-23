@@ -1,7 +1,5 @@
 import { participateEvent } from '@/api/xbuyEvent'
 import { EventType } from '@/constant/xbuyEvent'
-import jsCookie from 'js-cookie'
-import qs from 'query-string'
 import { Toast } from 'vant'
 
 export const toShare = async () => {
