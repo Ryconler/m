@@ -30,18 +30,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'photography',
     component: () => import('@/views/photography/Photography.vue')
   },
-  /* 服务分享赚页 */
-  {
-    path: '/share-earn',
-    name: 'shareEarn',
-    component: () => import('@/views/share-earn/ShareEarn.vue')
-  },
-  /* 分享赚我的清单列表页 */
-  {
-    path: '/share-earn/share-list',
-    name: 'shareList',
-    component: () => import('@/views/share-earn/share-list/ShareList.vue')
-  },
   /* 云客与企微的服务分享页 */
   {
     path: '/share-service',

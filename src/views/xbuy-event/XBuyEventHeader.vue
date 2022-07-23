@@ -1,6 +1,6 @@
 <template>
   <div v-if="eventInfo.skuId >= 0" class="xbuy-event-header">
-    <ImgHzw
+    <BaseImg
       class="event-image"
       :src="eventInfo.cmmdtyImage"
       width="220"

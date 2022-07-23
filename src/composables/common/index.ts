@@ -3,11 +3,14 @@ import { getPosition, getSelectCity, setSelectCity } from '@/utils'
 import { CityType } from '@/types/city'
 import { PositionType } from '@/types/position'
 import { onMounted, Ref, ref } from 'vue'
+import { queryDistricts } from '@/api/common'
+import { DistrictType } from '@/types/classifySort'
 
 /* 获取选择城市、定位等信息 */
-export const useLocation = () => {
+export const useLocation = (options: { districts: boolean }) => {
   const position: Ref<PositionType | null> = ref(null)
   const cityInfo: Ref<CityType> = ref(DefaultCity)
+  const districts: Ref<DistrictType[]> = ref([])
   const locationLoaded = ref(false) //选择城市与定位是否均获取完毕，可判断是否可以开始需要传参城市与定位的请求
   onMounted(async () => {
     const cookieCity = getSelectCity()
@@ -38,6 +41,16 @@ export const useLocation = () => {
     } else {
       locationLoaded.value = true
     }
+    // 如有必要，查询当前城市的城区
+    if (options.districts) {
+      const districtList = await queryDistricts(cityInfo.value.cityId)
+      districts.value = districtList.map((item: any) => {
+        return {
+          id: item.ID,
+          name: item.NAME
+        }
+      })
+    }
   })
-  return { position, cityInfo, locationLoaded }
+  return { position, cityInfo, districts, locationLoaded }
 }

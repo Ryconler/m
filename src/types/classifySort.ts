@@ -8,6 +8,12 @@ export declare type CategoryType = {
   selected?: boolean
 }
 
+export interface DistrictType {
+  id?: string
+  name: string
+  selected?: boolean
+}
+
 export declare type FilterDataType = {
   [key: string]: any //索引签名
   level4CategoryId?: string[]
@@ -15,4 +21,10 @@ export declare type FilterDataType = {
   shareAmountSort?: boolean
   storeFavPersonNumSort?: boolean
   shareGoodsOnly?: number
+}
+
+export declare type StoreType = {
+  code?: string
+  name: string
+  selected?: boolean
 }

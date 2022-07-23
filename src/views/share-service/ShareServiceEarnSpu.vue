@@ -1,5 +1,5 @@
 <template>
-  <div class="share-spu">
+  <div ref="shareSpu" class="share-spu">
     <div class="spu-info" @click="spuInfoClick">
       <BaseImg
         class="spu-image"
@@ -8,7 +8,7 @@
         :height="140"
       />
       <div class="spu-detail">
-        <div class="spu-name pf-medium"><i></i>{{ spu.spuName }}</div>
+        <div class="spu-name pf-medium">{{ spu.spuName }}</div>
         <div class="spu-function">
           <div class="spu-money">
             <ProductPrice3
@@ -27,7 +27,17 @@
               >
             </div>
           </div>
-          <div class="spu-share" @click="spuShareClick">立即分享</div>
+          <div
+            class="spu-share"
+            :class="spu.materialFlag && 'has-material'"
+            @click="spuShareClick"
+          >
+            <i></i>分享
+          </div>
+        </div>
+        <div class="spu-store">
+          <div class="spu-store-name">{{ spu.storeName }}</div>
+          <div v-if="spuSaleNum" class="spu-sale-num">已售{{ spuSaleNum }}</div>
         </div>
       </div>
       <div v-if="recommended" class="recommend-icon"></div>
@@ -35,13 +45,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, PropType, ref, Ref, toRefs } from 'vue'
+import { onMounted, PropType, Ref, ref, toRefs } from 'vue'
+import { ShareSpuType } from '@/constant/shareService'
+import {
+  useSpuInfo,
+  useSpuShare
+} from '@/composables/share-service/shareServiceEarnSpu'
 import { getYenPrice } from '@/utils'
-import { isEmpty } from 'lodash'
 
 const props = defineProps({
   spu: {
-    type: Object as PropType<any>,
+    type: Object as PropType<ShareSpuType>,
     default() {
       return {}
     }
@@ -62,26 +76,37 @@ const props = defineProps({
   recommended: {
     type: Boolean,
     default: false
+  },
+  shareCityCode: {
+    type: String,
+    default: ''
   }
 })
-const { spu, realSpuId } = toRefs(props)
+const { spu, realSpuId, shareCityCode } = toRefs(props)
 
-const { spuInfoClick, spuShareClick } = ((
-  spu: Ref<any>,
-  realSpuId: Ref<number>
-) => {
-  const spuInfoClick = async () => {
-    location.href = ``
+const emit = defineEmits(['inView'])
+
+const { spuSaleNum, spuInfoClick } = useSpuInfo(spu, realSpuId)
+const { spuShareClick } = useSpuShare(spu, realSpuId, shareCityCode)
+
+const intersectionObserver: Ref<IntersectionObserver | null> = ref(null)
+const shareSpu = ref()
+
+onMounted(async () => {
+  if (IntersectionObserver && shareSpu.value) {
+    intersectionObserver.value = new IntersectionObserver(entries => {
+      // If intersectionRatio is 0, the target is out of view
+      // and we do not need to do anything.
+      if (entries[0].intersectionRatio <= 0) return
+      emit('inView')
+      intersectionObserver.value?.unobserve(shareSpu.value)
+    })
+    // start observing
+    intersectionObserver.value.observe(shareSpu.value)
+  } else {
+    emit('inView')
   }
-  const spuShareClick = async (e: Event) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
-  return {
-    spuInfoClick,
-    spuShareClick
-  }
-})(spu, realSpuId)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -91,7 +116,7 @@ const { spuInfoClick, spuShareClick } = ((
     display: flex;
     background: #ffffff;
     border-radius: 16px;
-    padding: 24px 24px 32px;
+    padding: 24px 0 32px 24px;
     .spu-image {
       flex: none;
       border-radius: 8px;
@@ -104,7 +129,9 @@ const { spuInfoClick, spuShareClick } = ((
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden;
       .spu-name {
+        padding-right: 24px;
         font-size: 28px;
         color: #121212;
         line-height: 40px;
@@ -112,7 +139,8 @@ const { spuInfoClick, spuShareClick } = ((
       }
       .spu-function {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
+        padding-right: 24px;
         .spu-money {
           flex: 1;
           display: flex;
@@ -130,13 +158,60 @@ const { spuInfoClick, spuShareClick } = ((
         }
         .spu-share {
           flex: none;
-          width: 160px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 180px;
+          height: 56px;
           font-size: 26px;
           color: #ffffff;
-          text-align: center;
-          line-height: 48px;
+          line-height: 30px;
           background: #ff397e;
-          border-radius: 32px;
+          border-radius: 28px;
+          position: relative;
+          i {
+            width: 28px;
+            height: 28px;
+            background: url('@/assets/images/share-service/icon-share.png') 0 0/100%
+              100% no-repeat;
+            margin-right: 8px;
+          }
+          &.has-material::after {
+            content: '有素材';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 84px;
+            height: 28px;
+            background: url(@/assets/images/share-service/icon-has_material.png)
+              0 0/100% 100% no-repeat;
+            color: #ffffff;
+            font-size: 18px;
+            position: absolute;
+            top: -17px;
+            right: -8px;
+          }
+        }
+      }
+      .spu-store {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        overflow: hidden;
+        padding-right: 24px;
+        .spu-store-name {
+          flex: 1;
+          font-size: 22px;
+          color: #666666;
+          line-height: 28px;
+          @include ellicpsis;
+        }
+        .spu-sale-num {
+          flex: none;
+          line-height: 28px;
+          font-size: 22px;
+          color: #999999;
         }
       }
     }

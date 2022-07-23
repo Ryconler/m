@@ -1,6 +1,7 @@
 import { App } from 'vue'
 import BaseImg from '@/components/base-img/BaseImg.vue'
 import TitleBar from '@/components/title-bar/TitleBar.vue'
+import TitleBar2 from '@/components/title-bar/TitleBar2.vue'
 import ClassifySort from '@/components/classify-sort/ClassifySort.vue'
 import ClassifySort2 from '@/components/classify-sort2/ClassifySort.vue'
 import EmptyError from '@/components/empty-error/EmptyError.vue'
@@ -19,6 +20,7 @@ import MediaPreview from '@/components/media-preview/MediaPreview.vue'
 export default (app: App) => {
   app.component('BaseImg', BaseImg)
   app.component('TitleBar', TitleBar)
+  app.component('TitleBar2', TitleBar2)
   app.component('ClassifySort', ClassifySort)
   app.component('ClassifySort2', ClassifySort2)
   app.component('EmptyError', EmptyError)

@@ -1,5 +1,5 @@
 export declare type ResultType<T> = {
   data: T
-  code: number
+  code: number | string
   msg: string
 }

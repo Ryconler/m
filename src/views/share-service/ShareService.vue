@@ -1,13 +1,12 @@
 <template>
   <div class="share-service">
-    <VanSticky class="title-bar-sticky sticky-fix" style="--fix-bg: #ffffff">
-      <TitleBar
-        :city-name="cityInfo.cityName"
-        citypicker="party"
-        placeholder="请输入想要分享的商品"
-      >
-      </TitleBar>
-    </VanSticky>
+    <TitleBar2
+      :city-name="cityInfo.cityName"
+      citypicker="party"
+      placeholder="请输入想要分享的商品"
+      class="title-bar-comp"
+    >
+    </TitleBar2>
     <VanSwipe
       v-if="banners.length > 0"
       class="share-service-banner"
@@ -25,6 +24,7 @@
     </VanSwipe>
     <ShareServiceTask
       class="share-service-task-comp"
+      :city-info="cityInfo"
       :tasks="shareTasks"
     ></ShareServiceTask>
     <ShareServiceEarn
@@ -32,59 +32,35 @@
       class="share-service-earn-comp"
       :position="position"
       :city-info="cityInfo"
+      :districts="districts"
       :recommend-spus="recommendSpus"
     ></ShareServiceEarn>
   </div>
 </template>
 <script lang="ts" setup>
-import {
-  Swipe as VanSwipe,
-  SwipeItem as VanSwipeItem,
-  Sticky as VanSticky
-} from 'vant'
-import { setLoading } from '@/utils'
+import { Swipe as VanSwipe, SwipeItem as VanSwipeItem, Toast } from 'vant'
+import { ensureLogin, getKwtargetUrl, setLoading } from '@/utils'
 import { useLocation } from '@/composables/common'
 import ShareServiceTask from './ShareServiceTask.vue'
 import ShareServiceEarn from './ShareServiceEarn.vue'
-import { nextTick, onMounted, Ref, ref } from 'vue'
-import { queryShareTask } from '@/api/shareService'
-import { useStore } from 'vuex'
-import { CityType } from '@/types/city'
-import { queryShareConfig } from '@/api/shareEarn'
+import { nextTick, onMounted, provide, Ref, ref } from 'vue'
+import { ShareTaskType, TrackTerm } from '@/constant/shareService'
+import { getRecruitInfo, queryShareTask } from '@/api/shareService'
+import { useRouter } from 'vue-router'
+import { useShareMain } from '@/composables/share-service/common'
 
 setLoading(true)
 
-const store = useStore()
+const router = useRouter()
 
-const { position, cityInfo, locationLoaded } = useLocation()
+const { position, cityInfo, districts, locationLoaded } = useLocation({
+  districts: true
+})
 const banners: Ref<{ rotationPic: string; jumpUrl: string }[]> = ref([])
-const shareTasks: Ref<any[]> = ref([])
+const shareTasks: Ref<ShareTaskType[]> = ref([])
 const shareTasksLoaded = ref(false)
 
-const { recommendSpus } = ((cityInfo: Ref<CityType>) => {
-  const store = useStore()
-
-  const banners: Ref<any[]> = ref([])
-  const ads: Ref<any[]> = ref([])
-  const recommendSpus: Ref<any[]> = ref([])
-  onMounted(async () => {
-    const shareConfig = await queryShareConfig(cityInfo.value.cityId)
-    banners.value = shareConfig.adsList || []
-    ads.value = shareConfig.cmsList || []
-    recommendSpus.value = shareConfig.spuList || []
-    recommendSpus.value.forEach(item => {
-      item.storeName = item.storeName || item.businessName
-    })
-    nextTick(() => {
-      const mainDom = document.querySelector('.share-main')
-      const mainHeight = mainDom ? mainDom.getBoundingClientRect().height : 0
-      window.mainHeight = mainHeight
-    })
-  })
-  return {
-    recommendSpus
-  }
-})(cityInfo)
+const { recommendSpus } = useShareMain(cityInfo)
 
 onMounted(async () => {
   const { rotationPicList, shareTaskList } = await queryShareTask(
@@ -95,29 +71,46 @@ onMounted(async () => {
   nextTick(() => {
     shareTasksLoaded.value = true
   })
-  const hserecomkey = ''
-  window.hserecomkey = hserecomkey
   setLoading(false)
 })
 
+const myEarnClick = () => {
+  const link =
+    'https://life.cekid.com/h5/user/commission?cmd=share&sharetype=0&refresh=no'
+  location.href = link + '&kwtarget=blank'
+}
+
 const bannerClick = (banner: any) => {
-  location.href = banner.jumpUrl
+  location.href = getKwtargetUrl(banner.jumpUrl)
 }
 </script>
 <style lang="scss" scoped>
 .share-service {
   background-image: linear-gradient(180deg, #ffffff 0, #f4f5fa 446px);
-  .title-bar-sticky {
-    .van-sticky--fixed {
-      .title-bar {
-        background: #ffffff;
-      }
+  .title-bar-comp .my-earn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    height: 54px;
+    margin-left: 22px;
+    background-image: linear-gradient(0deg, #ff7d46, #ff4b4b);
+    border-radius: 27px;
+    i {
+      width: 40px;
+      height: 40px;
+      background: url(@/assets/images/share-service/icon-coin.png) 0 0/100% 100%
+        no-repeat;
+    }
+    span {
+      color: #ffffff;
+      font-size: 26px;
     }
   }
   .share-service-banner {
     width: 686px;
     height: 240px;
-    margin: 0 auto;
+    margin: 0 auto 16px;
     border-radius: 16px;
     overflow: hidden;
     :deep(.van-swipe__indicators) {

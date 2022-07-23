@@ -1,7 +1,7 @@
 <template>
   <VanTab
-    title="成长加"
-    name="chengzhangjia"
+    title="孕产"
+    name="yunchan"
     :style="`min-height: calc(100vh - ${Number(classifySortOffsetTop) - 1}px)`"
   >
     <ClassifySort2
@@ -79,9 +79,8 @@
 import { Tab as VanTab, List as VanList } from 'vant'
 import { getShareAmount } from '@/utils'
 import { PropType, ref, toRefs } from 'vue'
-
 import ShareServiceEarnSpu from './ShareServiceEarnSpu.vue'
-import { useShareSpus } from '@/composables/share-service/shareServiceEarnTabCZJ'
+import { useShareSpus } from '@/composables/share-service/shareServiceEarnTabYC'
 import { ShareSpuType } from '@/constant/shareService'
 import { useOffsetTop } from '@/composables/share-service/common'
 import { PositionType } from '@/types/position'

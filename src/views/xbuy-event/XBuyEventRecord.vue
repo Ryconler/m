@@ -7,7 +7,7 @@
         :key="index"
         class="record-user"
       >
-        <ImgHzw
+        <BaseImg
           class="record-user-avatar"
           :src="item.bePhoto"
           width="48"

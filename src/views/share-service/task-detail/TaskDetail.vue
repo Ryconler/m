@@ -25,7 +25,7 @@
           <VanCheckbox v-model="item.checked"></VanCheckbox>
         </div>
       </div>
-      <div class="tip">*视频仅支持下载到相册再分享</div>
+      <div class="tip">*视频需点击后下载，仅支持下载到相册再分享</div>
     </div>
     <div v-if="taskDetail.shareArticle" class="desc">
       <div class="desc-text">{{ taskDetail.shareArticle }}</div>
@@ -48,12 +48,6 @@
         <span>下载素材</span>
       </div>
     </div>
-
-    <VideoPlayer
-      v-if="videoPlayerShow"
-      v-model:show="videoPlayerShow"
-      :video-url="videoPlayerUrl"
-    ></VideoPlayer>
 
     <VanOverlay class="share-overlay" :show="dialogShow">
       <div class="share-dialog">
@@ -112,7 +106,7 @@
               dialogCopyStatus == OperationStatus.Loading ||
               dialogDownloadStatus == OperationStatus.Loading
             "
-            @click="Toast('openWx')"
+            @click="Toast('xx')"
           >
             <i></i>打开微信
           </button>
@@ -138,7 +132,7 @@
               dialogCopyStatus == OperationStatus.Loading ||
               dialogDownloadStatus == OperationStatus.Loading
             "
-            @click="Toast('openWx')"
+            @click="Toast('xxx')"
           >
             <i></i>打开微信
           </button>
@@ -168,20 +162,35 @@
 </template>
 <script lang="ts" setup>
 import { Overlay as VanOverlay } from 'vant'
-import { computed, onActivated, Ref, ref } from 'vue'
-import { useStore } from 'vuex'
+import {
+  convertImageBase64ToApp,
+  copyTextClipboard,
+  setLoading,
+  getPosterBase64,
+  videoPreview,
+  sleep,
+  getImageBase64
+} from '@/utils'
+import { computed, onMounted, Ref, ref } from 'vue'
 import {
   Checkbox as VanCheckbox,
   Toast,
   ImagePreview as VanImagePreview
 } from 'vant'
 import { useRoute } from 'vue-router'
-
+import {
+  MaterialType,
+  ShareKeyLinkTypeRKHY,
+  ShareKeyTokenRKHY,
+  ShareKeyToolType,
+  ShareMaterialType,
+  ShareTaskType,
+  ShareUTM
+} from '@/constant/shareService'
 import { useLocation } from '@/composables/common'
-import { queryShareTask } from '@/api/shareService'
+import { queryShareTask, reportShareLog } from '@/api/shareService'
 import { get } from 'lodash'
-import { MaterialType } from '@/constant/shareService'
-import { copyTextClipboard } from '@/utils'
+import { queryShareKey } from '@/api/common'
 
 enum DialogType {
   ShareWxChat,
@@ -194,10 +203,16 @@ enum OperationStatus {
   Failed
 }
 
+setLoading(true)
+
 const route = useRoute()
 
-const taskDetail: Ref<any | null> = ref(null)
-const statusMaterials: Ref<(any & { checked: boolean })[]> = ref([])
+const shareKey = ref('')
+
+const taskDetail: Ref<ShareTaskType | null> = ref(null)
+const statusMaterials: Ref<(ShareMaterialType & { checked: boolean })[]> = ref(
+  []
+)
 const selectedImgs = computed(() => {
   return statusMaterials.value.filter(
     item => item.checked && item.materialType != MaterialType.Video
@@ -214,28 +229,60 @@ const dialogType = ref(DialogType.ShareWxChat)
 const dialogCopyStatus = ref(OperationStatus.Loading)
 const dialogDownloadStatus = ref(OperationStatus.Loading)
 
-onActivated(async () => {
-  taskDetail.value = null
-  if (!taskDetail.value) {
-    // 页面刷新
-    const { cityInfo } = useLocation()
-    const taskList =
-      (await queryShareTask(cityInfo.value.cityId)).shareTaskList || []
-    const taskId = Number(route.params.taskId)
-    taskDetail.value = taskList.find(item => item.id == taskId) || null
-  }
+const { cityInfo } = useLocation({ districts: false })
+
+const cityId = computed(() => {
+  return <string>route.query.cityId || cityInfo.value.cityId
+})
+
+onMounted(async () => {
+  const taskList = (await queryShareTask(cityId.value)).shareTaskList || []
+  const taskId = Number(route.params.taskId)
+  taskDetail.value = taskList.find(item => item.id == taskId) || null
   if (taskDetail.value && taskDetail.value.shareMaterialList) {
-    statusMaterials.value = taskDetail.value.shareMaterialList.map(
-      (item: any) => {
-        return {
+    if (taskDetail.value.shareMaterialList.length == 1) {
+      // 一张图的时候 默认选中
+      statusMaterials.value = [
+        {
+          ...taskDetail.value.shareMaterialList[0],
+          checked: true
+        }
+      ]
+    } else {
+      // 多张图默认选中第一张海报  如果没有海报选中第一张保险海报 都没有不选中
+      const hasPoster = taskDetail.value.shareMaterialList.some(
+        item => item.materialType == MaterialType.Poster
+      )
+      let firstChecked = false //首张海报是否已选取
+      statusMaterials.value = taskDetail.value.shareMaterialList.map(item => {
+        const status = {
           ...item,
           checked: false
         }
-      }
-    )
+        if (
+          !firstChecked &&
+          (hasPoster
+            ? item.materialType == MaterialType.Poster
+            : item.materialType == MaterialType.BxPoster)
+        ) {
+          status.checked = true
+          firstChecked = true
+        }
+        return status
+      })
+    }
   }
-  const hserecomkey = ''
-  window.hserecomkey = hserecomkey
+  shareKey.value = await queryShareKey({
+    token: ShareKeyTokenRKHY,
+    linktype: ShareKeyLinkTypeRKHY,
+    linkcontentid: JSON.stringify({
+      task_id: taskDetail.value?.id
+    }),
+    remark: JSON.stringify({
+      toolType: ShareKeyToolType
+    })
+  })
+  setLoading(false)
 })
 
 const imageClick = (originIndex: number) => {
@@ -243,7 +290,7 @@ const imageClick = (originIndex: number) => {
   const imgUrls =
     taskDetail.value && taskDetail.value.shareMaterialList
       ? taskDetail.value.shareMaterialList
-          .filter((item: any, index: number) => {
+          .filter((item, index) => {
             if (item.materialType == MaterialType.Video) {
               index < originIndex && beforeVideoNum++
               return false
@@ -251,7 +298,7 @@ const imageClick = (originIndex: number) => {
               return true
             }
           })
-          .map((item: any) => item.picUrl)
+          .map(item => item.picUrl)
       : []
   VanImagePreview({
     images: imgUrls,
@@ -259,15 +306,10 @@ const imageClick = (originIndex: number) => {
   })
 }
 
-const videoPlayerShow = ref(false)
-const videoPlayerUrl = ref('')
 const videoClick = (index: number) => {
-  videoPlayerShow.value = true
-  videoPlayerUrl.value = get(
-    taskDetail.value,
-    `shareMaterialList[${index}].picUrl`,
-    ''
-  )
+  videoPreview({
+    videoUrl: get(taskDetail.value, `shareMaterialList[${index}].picUrl`, '')
+  })
 }
 
 const copyClick = async () => {
@@ -279,54 +321,76 @@ const copyClick = async () => {
   }
 }
 
-const wechatClick = () => {
+const wechatClick = async () => {
   Toast.loading({
     duration: 0,
-    forbidClick: true
+    forbidClick: true,
+    message: '加载中...'
   })
-  setShareInfo()
-    .then(async () => {
-      // 拉起微信好友分享
+  try {
+    const res = await copyTextClipboard(taskDetail.value?.shareArticle) // 需要放到setShareInfo前面执行，不然复制不成功
+    await setShareInfo()
+    if (res) {
+      Toast({
+        message: '复制推荐语成功',
+        duration: 0
+      })
+      await sleep(1000)
+    }
+    // 拉起微信好友分享
+    Toast('拉起微信好友分享')
+    reportShareLog({
+      taskId: taskDetail.value?.id,
+      shareKey: shareKey.value,
+      utmList: `${ShareUTM.Yunke}`
+    })
+  } catch (err) {
+    if (err == 'no media') {
+      Toast('请选择图片/视频')
+    } else if (err == 'invalid media') {
+      // 选择了多个图片或视频，走下载逻辑
       Toast.clear()
-      // openShareWxChat()
-      handleCopyAndSave() //静默下载选中的图片
-    })
-    .catch(err => {
-      if (err == 'no media') {
-        Toast('请选择图片/视频')
-      } else if (err == 'invalid media') {
-        // 选择了多个图片或视频，走下载逻辑
-        Toast.clear()
-        handleCopyAndSave(false, DialogType.ShareWxChat)
-      } else {
-        Toast('分享失败')
-      }
-    })
+      handleCopyAndSave(false, DialogType.ShareWxChat)
+    } else {
+      Toast('分享失败')
+    }
+  }
 }
 
-const momentClick = () => {
+const momentClick = async () => {
   Toast.loading({
     duration: 0,
-    forbidClick: true
+    forbidClick: true,
+    message: '加载中...'
   })
-  setShareInfo()
-    .then(() => {
-      // 拉起微信朋友圈分享
+  try {
+    const res = await copyTextClipboard(taskDetail.value?.shareArticle)
+    await setShareInfo()
+    if (res) {
+      Toast({
+        message: '复制推荐语成功',
+        duration: 0
+      })
+      await sleep(1000)
+    }
+    // 拉起微信朋友圈分享
+    Toast('拉起微信朋友圈分享')
+    reportShareLog({
+      taskId: taskDetail.value?.id,
+      shareKey: shareKey.value,
+      utmList: `${ShareUTM.Yunke}`
+    })
+  } catch (err) {
+    if (err == 'no media') {
+      Toast('请选择图片/视频')
+    } else if (err == 'invalid media') {
+      // 选择了多个图片或视频，走下载逻辑
       Toast.clear()
-      // openShareWxMoment()
-      handleCopyAndSave() //静默下载选中的图片
-    })
-    .catch(err => {
-      if (err == 'no media') {
-        Toast('请选择图片/视频')
-      } else if (err == 'invalid media') {
-        // 选择了多个图片或视频，走下载逻辑
-        Toast.clear()
-        handleCopyAndSave(false, DialogType.ShareWxMoment)
-      } else {
-        Toast('分享失败')
-      }
-    })
+      handleCopyAndSave(false, DialogType.ShareWxMoment)
+    } else {
+      Toast('分享失败')
+    }
+  }
 }
 
 const downloadClick = () => {
@@ -339,7 +403,40 @@ const downloadClick = () => {
 
 /* 设置分享信息 */
 async function setShareInfo() {
-  return 'setImageShare success'
+  if (selectedImgs.value.length == 0 && selectedVideos.value.length == 0) {
+    throw 'no media'
+  } else if (
+    selectedImgs.value.length == 1 &&
+    selectedVideos.value.length == 0
+  ) {
+    //只选了一张图片
+    try {
+      const selectedImg = selectedImgs.value[0]
+      let base64 = ''
+      if (
+        selectedImg.materialType == MaterialType.BxPoster ||
+        selectedImg.materialType == MaterialType.Poster
+      ) {
+        try {
+          base64 = await getPosterBase64(
+            selectedImg.picUrl,
+            selectedImg.spuId,
+            selectedImg.shareLink,
+            shareKey.value
+          )
+        } catch (e) {
+          base64 = await getImageBase64(selectedImg.picUrl)
+        }
+      } else {
+        base64 = await getImageBase64(selectedImg.picUrl)
+      }
+      return 'setImageShare success'
+    } catch (e) {
+      throw 'getImageBase64 fail'
+    }
+  } else {
+    throw 'invalid media'
+  }
 }
 
 /* 复制推荐语、保存图片视频，默认静默下载不显示弹窗 */
@@ -356,36 +453,43 @@ async function handleCopyAndSave(silence = true, type = DialogType.Download) {
       ? OperationStatus.Succeed
       : OperationStatus.Failed
   }
-  if (true) {
-    const mediaUrls: string[] = []
-    const posterPromises: Promise<string>[] = []
-    for (const material of statusMaterials.value) {
-      if (material.checked) {
-        if (
-          material.materialType == MaterialType.BxPoster ||
-          material.materialType == MaterialType.Poster
-        ) {
-          posterPromises.push(
-            new Promise(resolve => {
-              mediaUrls.push(material.picUrl)
-              resolve('success')
-            })
-          )
-        } else {
-          mediaUrls.push(material.picUrl)
-        }
+  await sleep(500)
+  const mediaUrls: string[] = []
+  const posterPromises: Promise<string>[] = []
+  for (const material of statusMaterials.value) {
+    if (material.checked) {
+      if (
+        material.materialType == MaterialType.BxPoster ||
+        material.materialType == MaterialType.Poster
+      ) {
+        posterPromises.push(
+          new Promise(resolve => {
+            getPosterBase64(
+              material.picUrl,
+              material.spuId,
+              material.shareLink,
+              shareKey.value
+            )
+              .then(poster => {
+                mediaUrls.push(poster)
+                resolve('success')
+              })
+              .catch(() => {
+                mediaUrls.push(material.picUrl)
+                resolve('success')
+              })
+          })
+        )
+      } else {
+        mediaUrls.push(material.picUrl)
       }
     }
-    // 所有海报生成成功后，保存图片视频
-    Promise.all(posterPromises).then(() => {
-      console.log('开始保存图片/视频')
-      dialogDownloadStatus.value = OperationStatus.Succeed
-    })
-  } else {
-    if (!silence) {
-      dialogDownloadStatus.value = OperationStatus.Failed
-    }
   }
+  // 所有海报生成成功后，保存图片视频
+  Promise.all(posterPromises).then(() => {
+    console.log('开始保存图片/视频')
+    dialogDownloadStatus.value = OperationStatus.Succeed
+  })
 }
 </script>
 

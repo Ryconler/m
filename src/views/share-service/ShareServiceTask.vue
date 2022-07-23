@@ -7,48 +7,50 @@
     </div>
     <div class="task-list">
       <ShareServiceTaskItem
-        v-for="(item, index) in tasks.slice(0, 2)"
+        v-for="(item, index) in tasks.slice(0, 4)"
         :key="index"
         class="task-item"
         :task="item"
         :slices="undefined"
+        :city-id="cityInfo.cityId"
       ></ShareServiceTaskItem>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+import { DefaultCity } from '@/constant/city'
+import { ShareTaskType, TrackTerm } from '@/constant/shareService'
+import { CityType } from '@/types/city'
+import {} from '@/utils'
 import { PropType, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 import ShareServiceTaskItem from './ShareServiceTaskItem.vue'
 
 const props = defineProps({
+  cityInfo: {
+    type: Object as PropType<CityType>,
+    default() {
+      return DefaultCity
+    }
+  },
   tasks: {
-    type: Array as PropType<any[]>,
+    type: Array as PropType<ShareTaskType[]>,
     default() {
       return []
     }
   }
 })
 
-const { tasks } = toRefs(props)
-
-const store = useStore()
-const router = useRouter()
+const { cityInfo, tasks } = toRefs(props)
 
 const moreClick = () => {
-  store.commit('shareService/setTaskList', tasks.value)
-  router.push({
-    name: 'shareServiceTaskList'
-  })
+  location.href = `/v2/share-service/task-list?cityId=${cityInfo.value.cityId}&kwtarget=blank`
 }
 </script>
 <style lang="scss" scoped>
 .share-service-task {
   .title {
-    box-sizing: border-box;
-    height: 104px;
-    padding: 40px 32px 24px;
+    height: 88px;
+    padding: 0 32px;
     display: flex;
     align-items: center;
     i {
@@ -73,7 +75,7 @@ const moreClick = () => {
     }
   }
   .task-list {
-    padding: 0 32px;
+    padding: 0 32px 8px;
     .task-item {
       margin-bottom: 24px;
       &:last-child {

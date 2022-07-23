@@ -1,7 +1,7 @@
 <template>
   <VanTab
-    title="成长加"
-    name="chengzhangjia"
+    title="自营服务"
+    name="ziyingfuwu"
     :style="`min-height: calc(100vh - ${Number(classifySortOffsetTop) - 1}px)`"
   >
     <ClassifySort2
@@ -10,7 +10,6 @@
       :options="filterOptions"
       :initial-filter="filterInitData"
       :category-infos="categoryInfo"
-      :districts="districts"
       :sticky-distance="classifySortStickyDistance"
       :offset-top="classifySortOffsetTop"
       @filter-change="filterChange"
@@ -67,9 +66,6 @@
         "
         :min-share-amount="getShareAmount(item).minAmount"
         :max-share-amount="getShareAmount(item).maxAmount"
-        :share-city-code="
-          item.templateType2Id == 601 ? cityInfo.cityId.toString() : ''
-        "
         @in-view="spuList.itemInView(index == spuList.list.length - 1)"
       ></ShareServiceEarnSpu>
     </VanList>
@@ -79,14 +75,12 @@
 import { Tab as VanTab, List as VanList } from 'vant'
 import { getShareAmount } from '@/utils'
 import { PropType, ref, toRefs } from 'vue'
-
+import { useShareSpus } from '@/composables/share-service/shareServiceEarnTabZYFW'
 import ShareServiceEarnSpu from './ShareServiceEarnSpu.vue'
-import { useShareSpus } from '@/composables/share-service/shareServiceEarnTabCZJ'
 import { ShareSpuType } from '@/constant/shareService'
 import { useOffsetTop } from '@/composables/share-service/common'
 import { PositionType } from '@/types/position'
 import { CityType } from '@/types/city'
-import { DistrictType } from '@/types/classifySort'
 import { DefaultCity } from '@/constant/city'
 
 const props = defineProps({
@@ -102,12 +96,6 @@ const props = defineProps({
       return DefaultCity
     }
   },
-  districts: {
-    type: Array as PropType<DistrictType[]>,
-    default() {
-      return []
-    }
-  },
   allRecommendSpus: {
     type: Array as PropType<ShareSpuType[]>,
     default() {
@@ -121,6 +109,7 @@ const { position, cityInfo, allRecommendSpus } = toRefs(props)
 const { classifySortOffsetTop, classifySortStickyDistance } = useOffsetTop()
 
 const classifySort = ref()
+
 const {
   spuList,
   categoryInfo,

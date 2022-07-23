@@ -43,50 +43,70 @@
         </div>
       </div>
       <div class="task-functions">
-        <a v-if="task.detailLink" class="task-link" :href="taskLink"
-          >查看链接</a
-        >
-        <div v-else></div>
-        <div v-if="isWorkChat" class="task-moment" @click="momentClick">
-          <i></i>企微朋友圈
+        <div class="task-link">
+          <a v-if="task.detailLink" :href="taskLink" @click="linkClick"
+            >查看链接</a
+          >
+          <div v-else></div>
         </div>
-        <div v-else class="task-share" @click="shareClick"><i></i>分享</div>
+        <div class="task-buttons">
+          <div class="task-quick-button" @click="quickClick"><i></i>分享</div>
+          <div class="workchat-send-button" @click="externalClick">
+            <i></i>一键群发
+          </div>
+          <div class="task-share-button" @click="shareClick"><i></i>分享</div>
+        </div>
       </div>
     </div>
 
-    <MediaPreview
-      v-if="isWorkChat && workchatMediaShow"
+    <MediasPreview
+      ref="mediasPreview"
       v-model:show="workchatMediaShow"
+      :task-id="task.id"
       :medias="task.shareMaterialList"
       :initial="workchatMediaInitial"
       :copy-text="task.shareArticle"
     >
-    </MediaPreview>
-    <VideoPlayer
-      v-else-if="videoPlayerShow"
-      v-model:show="videoPlayerShow"
-      :video-url="videoPlayerUrl"
-    ></VideoPlayer>
+    </MediasPreview>
+    <MediasExternal
+      ref="mediasExternal"
+      :task-id="task.id"
+      :medias="task.shareMaterialList"
+      :share-text="task.shareArticle"
+    >
+    </MediasExternal>
   </div>
 </template>
 <script lang="ts" setup>
 import { computed, PropType, ref, toRefs } from 'vue'
-import { MaterialType, ShareTaskBusinessType } from '@/constant/shareService'
-import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import {
+  MaterialType,
+  ShareTaskBusinessType,
+  ShareTaskType,
+  TrackTerm
+} from '@/constant/shareService'
+import MediasPreview from './components/MediasPreview.vue'
+import MediasExternal from './components/MediasExternal.vue'
 import qs from 'query-string'
 import LogoYunchan from '@/assets/images/share-service/logo-yunchan.png'
 import LogoChengzhangjia from '@/assets/images/share-service/logo-chengzhangjia.png'
 import LogoZiying from '@/assets/images/share-service/logo-ziying.png'
 import LogoBaoxian from '@/assets/images/share-service/logo-baoxian.png'
 import LogoHuodong from '@/assets/images/share-service/logo-huodong.png'
-import { convertImageBase64ToFile } from '@/utils'
-import { Toast, ImagePreview as VanImagePreview } from 'vant'
+import { videoPreview } from '@/utils'
+import { ImagePreview as VanImagePreview } from 'vant'
 import { get } from 'lodash'
+import { DefaultCity } from '@/constant/city'
 
 const props = defineProps({
+  cityId: {
+    type: [String, Number],
+    default() {
+      return DefaultCity.cityId
+    }
+  },
   task: {
-    type: Object as PropType<any>,
+    type: Object as PropType<ShareTaskType>,
     default() {
       return {}
     }
@@ -97,15 +117,10 @@ const props = defineProps({
   }
 })
 
-const { task } = toRefs(props)
-const router = useRouter()
-const store = useStore()
+const { cityId, task } = toRefs(props)
 
-const isWorkChat = ref(false)
 const workchatMediaShow = ref(false)
 const workchatMediaInitial = ref(0)
-const videoPlayerShow = ref(false)
-const videoPlayerUrl = ref('')
 
 const taskLogo = computed(() => {
   switch (task.value.businessType) {
@@ -134,87 +149,31 @@ const taskLink = computed(() => {
   }
 })
 
-const momentClick = async () => {
-  if (task.value.shareMaterialList) {
-    Toast.loading({
-      duration: 0,
-      forbidClick: true,
-      message: '正在生成带员工信息图片素材中，请稍等...'
-    })
-    const videoUrls = []
-    const imgUrls: string[] = []
-    const imgMediaIds: string[] = []
-    const imgMediaIdPromises = []
-    for (const material of task.value.shareMaterialList) {
-      if (material.materialType == MaterialType.Video) {
-        videoUrls.push(material.picUrl)
-      } else if (
-        material.materialType == MaterialType.BxPoster ||
-        material.materialType == MaterialType.Poster
-      ) {
-        imgMediaIdPromises.push(
-          new Promise(resolve => {
-            imgUrls.push(material.picUrl)
-            resolve('success')
-          })
-        )
-      } else if (material.materialType == MaterialType.Image) {
-        imgUrls.push(material.picUrl)
-      }
-    }
-    Promise.all(imgMediaIdPromises).then(() => {
-      Toast('分享成功')
-    })
-  }
+const linkClick = () => {}
+
+const mediasPreview = ref()
+const mediasExternal = ref()
+
+const quickClick = async () => {
+  mediasPreview.value.quickShare()
+}
+
+const externalClick = async () => {
+  mediasExternal.value.shareToExternal()
 }
 
 const shareClick = () => {
-  router.push({
-    name: 'shareServiceTaskDetail',
-    params: {
-      taskId: task.value.id
-    }
-  })
+  location.href = `/v2/share-service/task/${task.value.id}?cityId=${cityId.value}&kwtarget=blank`
 }
 
 const imageClick = (originIndex: number) => {
-  if (isWorkChat.value) {
-    workchatMediaShow.value = true
-    workchatMediaInitial.value = originIndex
-    return
-  }
-  let beforeVideoNum = 0 //点击图片之前视频的数量
-  const imgUrls =
-    task.value && task.value.shareMaterialList
-      ? task.value.shareMaterialList
-          .filter((item: any, index: number) => {
-            if (item.materialType == MaterialType.Video) {
-              index < originIndex && beforeVideoNum++
-              return false
-            } else {
-              return true
-            }
-          })
-          .map((item: any) => item.picUrl)
-      : []
-  VanImagePreview({
-    images: imgUrls,
-    startPosition: originIndex - beforeVideoNum
-  })
+  workchatMediaShow.value = true
+  workchatMediaInitial.value = originIndex
 }
 
 const videoClick = (index: number) => {
-  if (isWorkChat.value) {
-    workchatMediaShow.value = true
-    workchatMediaInitial.value = index
-    return
-  }
-  videoPlayerShow.value = true
-  videoPlayerUrl.value = get(
-    task.value,
-    `shareMaterialList[${index}].picUrl`,
-    ''
-  )
+  workchatMediaShow.value = true
+  workchatMediaInitial.value = index
 }
 </script>
 
@@ -309,47 +268,78 @@ const videoClick = (index: number) => {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       .task-link {
-        font-size: 24px;
-        color: #ff397e;
-        padding-right: 32px;
-        background: url('@/assets/images/share-service/icon-link.png') right
-          center/24px 24px no-repeat;
-      }
-      .task-moment {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 200px;
-        height: 48px;
-        background: #ff397e;
-        border-radius: 24px;
-        font-size: 24px;
-        color: #ffffff;
-        i {
-          width: 30px;
-          height: 30px;
-          margin-right: 10px;
-          background: url('@/assets/images/share-service/icon-moment-white.png')
-            0 0/100% 100% no-repeat;
+        flex: none;
+        a {
+          display: block;
+          font-size: 24px;
+          color: #ff397e;
+          padding-right: 32px;
+          background: url('@/assets/images/share-service/icon-link.png') right
+            center/24px 24px no-repeat;
         }
       }
-      .task-share {
+      .task-buttons {
         display: flex;
-        justify-content: center;
         align-items: center;
-        width: 160px;
-        height: 48px;
-        background: #ff397e;
-        border-radius: 24px;
-        font-size: 24px;
-        color: #ffffff;
-        i {
-          width: 30px;
-          height: 30px;
+        .workchat-send-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0 20px;
+          height: 48px;
+          background: #ff397e;
+          border-radius: 24px;
+          font-size: 24px;
+          line-height: 30px;
+          color: #ffffff;
+          i {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            background: url('@/assets/images/share-service/icon-wechat-white.png')
+              0 0/100% 100% no-repeat;
+          }
+        }
+        .task-quick-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0 20px;
+          height: 48px;
+          background: #ff397e;
+          border-radius: 24px;
+          font-size: 24px;
+          line-height: 30px;
+          color: #ffffff;
           margin-right: 10px;
-          background: url('@/assets/images/share-service/icon-wechat-white.png')
-            0 0/100% 100% no-repeat;
+          i {
+            width: 30px;
+            height: 30px;
+            background: url('@/assets/images/share-service/icon-share.png') 0 0/100%
+              100% no-repeat;
+            margin-right: 10px;
+          }
+        }
+        .task-share-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 180px;
+          height: 56px;
+          background: #ff397e;
+          border-radius: 28px;
+          font-size: 24px;
+          line-height: 30px;
+          color: #ffffff;
+          i {
+            width: 28px;
+            height: 28px;
+            background: url('@/assets/images/share-service/icon-share.png') 0 0/100%
+              100% no-repeat;
+            margin-right: 8px;
+          }
         }
       }
     }
