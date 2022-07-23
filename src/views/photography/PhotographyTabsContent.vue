@@ -172,7 +172,7 @@ const themePicClick = (theme: any, picIndex: number) => {
         overflow: hidden;
         font-size: 30px;
         line-height: 36px;
-        @include ellicpsis;
+        @include ellipsis;
       }
       .theme-pics {
         display: flex;
@@ -244,14 +244,14 @@ const themePicClick = (theme: any, picIndex: number) => {
               line-height: 32px;
               margin-bottom: 8px;
               color: #121212;
-              @include ellicpsis;
+              @include ellipsis;
             }
             .product-photonum {
               font-size: 20px;
               color: #444444;
               line-height: 32px;
               margin-bottom: 4px;
-              @include ellicpsis;
+              @include ellipsis;
             }
             .product-price-wrap {
               height: 44px;

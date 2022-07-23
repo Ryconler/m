@@ -2,7 +2,6 @@
   <div class="tabs">
     <VanTabs
       v-model:active="selectedTab"
-      class="sticky-fix"
       style="--fix-bg: #ffffff"
       title-active-color="#ff5900"
       :swipe-threshold="4"

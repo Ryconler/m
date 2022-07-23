@@ -99,7 +99,7 @@ const viewAllClick = () => {
         font-size: 28px;
         color: #262626;
         line-height: 40px;
-        @include ellicpsis;
+        @include ellipsis;
       }
       .record-user-time {
         flex: none;

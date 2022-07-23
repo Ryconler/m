@@ -135,7 +135,7 @@ onMounted(async () => {
         font-size: 28px;
         color: #121212;
         line-height: 40px;
-        @include ellicpsisN(2);
+        @include ellipsisN(2);
       }
       .spu-function {
         display: flex;
@@ -205,7 +205,7 @@ onMounted(async () => {
           font-size: 22px;
           color: #666666;
           line-height: 28px;
-          @include ellicpsis;
+          @include ellipsis;
         }
         .spu-sale-num {
           flex: none;

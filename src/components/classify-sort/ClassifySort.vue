@@ -644,7 +644,7 @@ defineExpose({
             background: #ffffff;
             border-radius: 8px;
             span {
-              @include ellicpsis;
+              @include ellipsis;
             }
             i {
               flex: none;

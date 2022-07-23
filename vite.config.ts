@@ -41,15 +41,15 @@ export default defineConfig(({ command, mode }) => {
           pxtorem({
             // index.html设置了1rem=clientWidth/10；设计稿的屏幕宽度是750，所以这里设75可以在代码中直接使用设计稿给的尺寸
             rootValue: 75, // 1px -> 1/75rem
-            propList: ['*']
-            // 不加 exclude: 'node_modules' ,打包后会出现部分px未转换的问题
+            propList: ['*'],
+            exclude: 'node_modules'
           })
         ]
       },
       preprocessorOptions: {
         scss: {
           charset: false,
-          additionalData: `@import "@/assets/css/variables.scss";@import "@/assets/css/vant-config.scss";`
+          additionalData: `@import "@/assets/css/variables.scss";`
         }
       }
     },

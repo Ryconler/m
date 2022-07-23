@@ -73,7 +73,7 @@ const jumpSku = () => {
       color: #262626;
       line-height: 40px;
       margin-bottom: 8px;
-      @include ellicpsisN(2);
+      @include ellipsisN(2);
     }
     .event-price {
       font-size: 24px;

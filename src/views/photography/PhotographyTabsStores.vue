@@ -71,14 +71,14 @@ const getShopUrl = (store: any) => {
         color: #121212;
         line-height: 34px;
         margin-bottom: 16px;
-        @include ellicpsis;
+        @include ellipsis;
       }
       .store-address {
         font-size: 26px;
         color: #262626;
         line-height: 32px;
         margin-bottom: 12px;
-        @include ellicpsis;
+        @include ellipsis;
       }
       .store-distance {
         font-size: 26px;

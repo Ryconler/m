@@ -35,7 +35,7 @@ const searchClick = async () => {
   location.href = link
 }
 const cityClick = () => {
-  location.href = `/city-choose?referer=${encodeURIComponent(location.href)}`
+  location.href = `/city-choose?referrer=${encodeURIComponent(location.href)}`
 }
 </script>
 

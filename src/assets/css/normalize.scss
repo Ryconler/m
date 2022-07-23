@@ -1,20 +1,40 @@
 @charset "UTF-8";
-@import './variables.scss';
-@import './vant-config.scss';
-
-html,
-body {
+body,
+html {
   -webkit-font-smoothing: antialiased;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: Helvetica, Tahoma, Arial, 'PingFang SC', 'Hiragino Sans GB',
+    'Heiti SC', STXihei, 'Microsoft YaHei', SimHei, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+html * {
+  box-sizing: border-box;
+}
+button,
+fieldset,
+img {
+  border: 0;
+  max-width: 100%;
+}
+img,
+input {
+  vertical-align: middle;
+}
+a,
+ins {
+  text-decoration: none;
 }
 body {
-  outline: 0;
   -webkit-tap-highlight-color: transparent;
+  outline: 0;
+  user-select: none;
   -webkit-user-select: none;
   -webkit-text-size-adjust: 100%;
+  width: 100%;
+}
+body {
   line-height: 1;
-  font-size: 12px;
+  font-size: 16px;
 }
 article,
 aside,
@@ -64,17 +84,6 @@ h5,
 h6 {
   font-weight: 400;
 }
-a,
-ins {
-  text-decoration: none;
-}
-a {
-  color: $deep-text-color;
-}
-em,
-i {
-  font-style: normal;
-}
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -101,16 +110,6 @@ textarea {
   font-weight: inherit;
   outline: 0;
 }
-button,
-fieldset,
-img {
-  border: 0;
-  max-width: 100%;
-}
-img,
-input {
-  vertical-align: middle;
-}
 button {
   -webkit-appearance: none;
   background: 0 0;
@@ -123,9 +122,13 @@ input::-webkit-outer-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
-input[type='search']::-webkit-search-cancel-button {
-  -webkit-appearance: none;
+a {
+  color: #42414f;
 }
-input::-webkit-input-placeholder {
-  color: $light-text-color;
+em,
+i {
+  font-style: normal;
+}
+::-webkit-input-placeholder {
+  color: #bbb;
 }

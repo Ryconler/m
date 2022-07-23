@@ -44,7 +44,7 @@ const selectClick = (store: StoreType) => {
     color: #262626;
     font-size: 24px;
     margin-top: 44px;
-    @include ellicpsis;
+    @include ellipsis;
     &.active {
       color: #ff397e;
     }

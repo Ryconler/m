@@ -1,7 +1,7 @@
 <template>
   <VanTabs
     v-model:active="selectedTab"
-    class="tabs sticky-fix"
+    class="tabs"
     style="--fix-bg: #ffffff"
     :ellipsis="false"
     sticky

@@ -68,7 +68,9 @@ onMounted(async () => {
 })
 
 const bannerClick = (banner: any) => {
-  location.href = banner.jumpUrl
+  if (banner.jumpUrl) {
+    location.href = banner.jumpUrl
+  }
 }
 </script>
 <style lang="scss" scoped>

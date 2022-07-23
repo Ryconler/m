@@ -184,7 +184,7 @@ const { activityShare } = useActivityShare(cityInfo)
         font-size: 28px;
         color: #333333;
         line-height: 40px;
-        @include ellicpsis;
+        @include ellipsis;
       }
     }
 
@@ -209,7 +209,7 @@ const { activityShare } = useActivityShare(cityInfo)
           color: #333333;
           line-height: 40px;
           margin-bottom: 8px;
-          @include ellicpsisN(2);
+          @include ellipsisN(2);
         }
         .activity-time {
           font-size: 24px;

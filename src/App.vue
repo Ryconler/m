@@ -22,8 +22,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+html,
 body {
   background: #f1f1f1;
+}
+#app {
+  max-width: 10rem;
+  margin: 0 auto;
 }
 /*兼容iphoneX 底部 全局样式*/
 @supports (bottom: constant(safe-area-inset-bottom)) or
@@ -48,36 +53,6 @@ body {
   font-weight: 600;
 }
 
-.sticky-fix .van-sticky--fixed {
-  &::before {
-    content: '';
-    display: block;
-    position: absolute;
-    background: var(--fix-bg);
-    z-index: -1;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    // 必须要设置translateZ(0),开启gpu渲染
-    transform: translateY(-2px) translateZ(0);
-  }
-}
-.van-image-preview__overlay {
-  &::before {
-    content: '';
-    display: block;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: -1;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    // 必须要设置translateZ(0),开启gpu渲染
-    transform: translateY(-2px) translateZ(0);
-  }
-}
 .van-image-preview__image > * {
   transform: translateZ(0);
 }

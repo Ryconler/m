@@ -62,12 +62,12 @@ export default defineComponent({
       margin-bottom: 12px;
       background: url('@/assets/images/photography/icon-shangpin.png') left
         center/28px 28px no-repeat;
-      @include ellicpsis;
+      @include ellipsis;
     }
     .product-extra {
       display: flex;
       align-items: flex-end;
-      @include ellicpsis;
+      @include ellipsis;
       .product-photonum {
         font-size: 20px;
         color: #444444;

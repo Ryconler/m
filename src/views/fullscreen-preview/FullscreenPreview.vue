@@ -60,7 +60,7 @@ const { images, startPosition, imageIndex, imageChange } = useImages()
           font-size: 30px;
           color: #ffffff;
           line-height: 36px;
-          @include ellicpsis;
+          @include ellipsis;
         }
       }
     }

@@ -142,14 +142,14 @@ const { shareClick, signClick } = useInsuranceClick()
           color: #15161f;
           line-height: 40px;
           margin-bottom: 8px;
-          @include ellicpsis;
+          @include ellipsis;
         }
         .insurance-desc {
           font-size: 24px;
           color: #999999;
           line-height: 30px;
           margin-bottom: 12px;
-          @include ellicpsisN(2);
+          @include ellipsisN(2);
         }
 
         .insurance-tag {
@@ -163,7 +163,7 @@ const { shareClick, signClick } = useInsuranceClick()
           font-size: 20px;
           color: #fba032;
           margin-bottom: 16px;
-          @include ellicpsis;
+          @include ellipsis;
         }
         .insurance-money {
           display: flex;

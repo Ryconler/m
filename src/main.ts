@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { ConfigProvider } from 'vant'
+// import { ConfigProvider } from 'vant'
 
 import App from './App.vue'
 import router from './router'
@@ -15,5 +15,5 @@ app.use(components)
 app.use(directives)
 app.use(middlewares)
 app.use(mixins)
-app.use(ConfigProvider)
+// app.use(ConfigProvider)
 app.use(store).use(router).mount('#app')

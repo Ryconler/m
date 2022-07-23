@@ -65,7 +65,7 @@ const selectClick = (category: CategoryType) => {
         border-radius: 8px;
         margin-top: 20px;
         margin-right: 18px;
-        @include ellicpsis;
+        @include ellipsis;
         &:nth-child(4n) {
           margin-right: 0;
         }

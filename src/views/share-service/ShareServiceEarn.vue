@@ -2,7 +2,7 @@
   <div class="share-service-earn">
     <VanTabs
       v-model:active="selectedTab"
-      class="tabs sticky-fix"
+      class="tabs"
       style="--fix-bg: #ffffff"
       :ellipsis="false"
       sticky
