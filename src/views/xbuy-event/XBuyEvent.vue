@@ -79,8 +79,6 @@ import jsCookie from 'js-cookie'
 
 setLoading(true)
 
-ensureLogin()
-
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
