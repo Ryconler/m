@@ -49,23 +49,23 @@
 <script lang="ts" setup>
 /* eslint-disable vue/require-default-prop */
 import { queryShareKey } from '@/api/common'
-import { reportShareLog } from '@/api/shareService'
 import {
   MaterialType,
   MaterialTypeText,
   ShareKeyLinkTypeWorkChat,
   ShareKeyTokenWorkChat,
   ShareKeyToolType,
-  ShareMaterialType,
-  ShareUTM
+  ShareMaterialType
 } from '@/constant/shareService'
 import {
   convertImageBase64ToFile,
   copyTextClipboard,
   getPosterBase64,
-  sleep
+  sleep,
+  videoPreview
 } from '@/utils'
 import {
+  ImagePreview,
   Popup as VanPopup,
   Swipe as VanSwipe,
   SwipeItem as VanSwipeItem,
@@ -142,33 +142,21 @@ const shareClick = async () => {
     media.materialType == MaterialType.Poster
   ) {
     try {
-      shareKey.value = await queryShareKey({
-        token: ShareKeyTokenWorkChat,
-        linktype: ShareKeyLinkTypeWorkChat,
-        linkcontentid: JSON.stringify({
-          task_id: taskId?.value,
-          spuid: spuId?.value
-        }),
-        remark: JSON.stringify({
-          toolType: ShareKeyToolType
-        })
-      })
+      shareKey.value = await queryShareKey({})
       const posterBase64 = await getPosterBase64(
         media.picUrl,
-        media.spuId,
         media.shareLink,
         shareKey.value
       )
-      const posterFile = convertImageBase64ToFile(posterBase64)
-      imgMediaId = ''
+      imgMediaId = posterBase64
     } catch (e: any) {
       // 海报无镂空区域，直接用背景图当素材
-      imgMediaId = ''
+      imgMediaId = media.picUrl
     }
   } else if (media.materialType == MaterialType.Image) {
-    imgMediaId = ''
+    imgMediaId = media.picUrl
   } else if (media.materialType == MaterialType.Video) {
-    videoMediaId = ''
+    videoMediaId = media.picUrl
   }
   if (copyRes) {
     Toast({
@@ -179,7 +167,15 @@ const shareClick = async () => {
   }
   const image = imgMediaId ? { mediaid: imgMediaId } : undefined
   const video = videoMediaId ? { mediaid: videoMediaId } : undefined
-  Toast('分享成功')
+  Toast('模拟分享成功...')
+  await sleep(1500)
+  if (image) {
+    ImagePreview([image.mediaid])
+  } else if (video) {
+    videoPreview({
+      videoUrl: video.mediaid
+    })
+  }
 }
 
 const quickShare = async () => {

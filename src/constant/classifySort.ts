@@ -12,6 +12,7 @@ export const CategoryAll: CategorysType = {
 
 export const FilterTypes = {
   Category: 'category', //品类筛选
+  District: 'district', //城区筛选
   Distance: 'distance', //距离排序
   Store: 'store', //门店筛选
   Earn: 'earn', //佣金排序

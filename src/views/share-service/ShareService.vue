@@ -1,12 +1,11 @@
 <template>
   <div class="share-service">
-    <TitleBar2
+    <TitleBar
       :city-name="cityInfo.cityName"
-      citypicker="party"
       placeholder="请输入想要分享的商品"
       class="title-bar-comp"
     >
-    </TitleBar2>
+    </TitleBar>
     <VanSwipe
       v-if="banners.length > 0"
       class="share-service-banner"
@@ -33,34 +32,28 @@
       :position="position"
       :city-info="cityInfo"
       :districts="districts"
-      :recommend-spus="recommendSpus"
     ></ShareServiceEarn>
   </div>
 </template>
 <script lang="ts" setup>
-import { Swipe as VanSwipe, SwipeItem as VanSwipeItem, Toast } from 'vant'
-import { ensureLogin, getKwtargetUrl, setLoading } from '@/utils'
+import { Swipe as VanSwipe, SwipeItem as VanSwipeItem } from 'vant'
+import { setLoading } from '@/utils'
 import { useLocation } from '@/composables/common'
 import ShareServiceTask from './ShareServiceTask.vue'
 import ShareServiceEarn from './ShareServiceEarn.vue'
-import { nextTick, onMounted, provide, Ref, ref } from 'vue'
-import { ShareTaskType, TrackTerm } from '@/constant/shareService'
-import { getRecruitInfo, queryShareTask } from '@/api/shareService'
-import { useRouter } from 'vue-router'
-import { useShareMain } from '@/composables/share-service/common'
+import { nextTick, onMounted, Ref, ref } from 'vue'
+import { ShareTaskType } from '@/constant/shareService'
+import { queryShareTask } from '@/api/shareService'
 
 setLoading(true)
 
-const router = useRouter()
-
 const { position, cityInfo, districts, locationLoaded } = useLocation({
-  districts: true
+  districts: true,
+  position: false
 })
 const banners: Ref<{ rotationPic: string; jumpUrl: string }[]> = ref([])
 const shareTasks: Ref<ShareTaskType[]> = ref([])
 const shareTasksLoaded = ref(false)
-
-const { recommendSpus } = useShareMain(cityInfo)
 
 onMounted(async () => {
   const { rotationPicList, shareTaskList } = await queryShareTask(
@@ -74,14 +67,8 @@ onMounted(async () => {
   setLoading(false)
 })
 
-const myEarnClick = () => {
-  const link =
-    'https://life.cekid.com/h5/user/commission?cmd=share&sharetype=0&refresh=no'
-  location.href = link + '&kwtarget=blank'
-}
-
 const bannerClick = (banner: any) => {
-  location.href = getKwtargetUrl(banner.jumpUrl)
+  location.href = banner.jumpUrl
 }
 </script>
 <style lang="scss" scoped>

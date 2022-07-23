@@ -81,4 +81,9 @@ body {
 .van-image-preview__image > * {
   transform: translateZ(0);
 }
+
+/* 部分机型使用fit-content宽度会有明显的变化过程 */
+.van-toast--text {
+  width: initial;
+}
 </style>

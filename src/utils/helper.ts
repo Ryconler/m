@@ -11,9 +11,9 @@ import {
 import VideoPlayer from '@/components/video-player/VideoPlayer.vue'
 import Minicard from '@/components/minicard/Minicard.vue'
 import urlPrefixes from '@/constant/urlPrefixes'
-import { getMinicode } from '@/api/common'
 import kwimage from './kwimage'
 import queryString from 'query-string'
+import { geQrcode } from '@/api/common'
 
 export function setLoading(isShow = true) {
   const loadDom: HTMLElement | null = document.querySelector(
@@ -162,13 +162,6 @@ export function convertImageBase64ToFile(str = '', fileName = 'tmpFile.png') {
   return new File([u8arr], fileName, { type })
 }
 
-/* url拼接kwtarget=blank */
-export function getKwtargetUrl(url: string) {
-  const urlObj = queryString.parseUrl(url)
-  urlObj.query.kwtarget = 'blank'
-  return queryString.stringifyUrl(urlObj)
-}
-
 /* url参数替换*/
 export function replaceUrlKey(url: string, key: string, value: string) {
   const urlObj = queryString.parseUrl(url)
@@ -201,22 +194,15 @@ export function replaceStrCookie(str: string, sign = '#') {
 /* 获取带二维码的海报 */
 export async function getPosterBase64(
   bgimg: string,
-  insuranceId = 0,
   shareLink = '',
   hserecomkey = ''
 ): Promise<string> {
   let qrcodeResource = ''
-  if (shareLink) {
-    const storeCode =
-      jsCookie.get('storeCodeH5') || jsCookie.get('nodeCode') || ''
-    shareLink = shareLink.replace(/#storeCode#/g, storeCode)
-    const minicode = await getMinicode(shareLink, hserecomkey)
-    qrcodeResource = `data:image/png;base64,${minicode}`
-  } else if (insuranceId > 0) {
-    const uid = jsCookie.get('uid')
-    const skey = jsCookie.get('skey')
-    qrcodeResource = `${urlPrefixes.xingbeibaoxianapi}/sharew/item/ercode?itemId=${insuranceId}&uid=${uid}&skey=${skey}`
-  }
+  const storeCode =
+    jsCookie.get('storeCodeH5') || jsCookie.get('nodeCode') || ''
+  shareLink = shareLink.replace(/#storeCode#/g, storeCode)
+  const minicode = await geQrcode(shareLink, hserecomkey)
+  qrcodeResource = `data:image/png;base64,${minicode}`
   try {
     const resultImage = await kwimage.composeImage({
       blankAreaImage: qrcodeResource,

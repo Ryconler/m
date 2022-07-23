@@ -1,7 +1,7 @@
 import { ShareSpuType } from '@/constant/shareService'
-import { getMinicardUrl, toDemotion } from '@/utils'
-import { isNumber, toNumber } from 'lodash'
-import { Toast } from 'vant'
+import { getMinicardUrl, sleep, toDemotion } from '@/utils'
+import { isNumber } from 'lodash'
+import { ImagePreview, Toast } from 'vant'
 import { computed, Ref } from 'vue'
 
 export const useSpuInfo = (spu: Ref<ShareSpuType>, realSpuId: Ref<number>) => {
@@ -29,43 +29,24 @@ export const useSpuShare = (
   realSpuId: Ref<number>,
   shareCityCode: Ref<string>
 ) => {
-  const { spuLink } = useSpuInfo(spu, realSpuId)
-  const realSkuId = computed(() => {
-    return spu.value.templateType2Id == 601 &&
-      realSpuId.value != spu.value.spuId
-      ? spu.value.spuId
-      : undefined
-  })
   const spuShareClick = async (e: Event) => {
     e.preventDefault()
     e.stopPropagation()
-    if (spu.value.materialFlag) {
-      location.href = `/v2/share-service/material-list/${
-        realSpuId.value
-      }?skuId=${realSkuId.value || ''}&shareCityCode=${
-        shareCityCode.value
-      }&templateType2Id=${spu.value.templateType2Id}&kwtarget=blank`
-      return
-    }
     Toast.loading({
       forbidClick: true,
       duration: 0,
       message: '加载中...'
     })
-    const shareLink = spuLink.value
-    const shareTitle = <string>spu.value.spuName
-    const shareRemark = JSON.stringify({
-      url: shareLink
-    })
     const shareMinicard =
       (await getMinicardUrl(
         <string>spu.value.cmmdtyImage,
         spu.value.minPrice
-      )) || spu.value.cmmdtyImage
-    //分享小程序卡片封面 5:4
-    const sharePosterimg = spu.value.cmmdtyImage
-    //分享海报图 11
-    Toast('分享成功')
+      )) ||
+      spu.value.cmmdtyImage ||
+      ''
+    Toast('模拟拉起原生分享面板成功')
+    await sleep(1500)
+    ImagePreview([shareMinicard])
   }
   return {
     spuShareClick

@@ -12,8 +12,8 @@ import {
 import { CityType } from '@/types/city'
 import { FilterDataType, StoreType } from '@/types/classifySort'
 import { PositionType } from '@/types/position'
-import { getMinicardUrl, replaceUrlKey } from '@/utils'
-import { Toast } from 'vant'
+import { getMinicardUrl, replaceUrlKey, sleep } from '@/utils'
+import { ImagePreview, Toast } from 'vant'
 import { computed, reactive, Ref, ref } from 'vue'
 
 /* 活动模块列表 */
@@ -128,7 +128,6 @@ export const useActivityInfo = (cityInfo: Ref<CityType>) => {
 }
 
 export const useActivityShare = (cityInfo: Ref<CityType>) => {
-  const { activityLink } = useActivityInfo(cityInfo)
   const activityShare = async (e: Event, activity: ShareActivityType) => {
     e.stopPropagation()
     Toast.loading({
@@ -136,18 +135,14 @@ export const useActivityShare = (cityInfo: Ref<CityType>) => {
       duration: 0,
       message: '加载中...'
     })
-    const shareTitle = activity.activeTheme
-    const shareRemark = JSON.stringify({
-      toolType: ShareKeyToolType,
-      url: activityLink(activity)
-    })
     const shareMinicard =
       (await getMinicardUrl(
         activity.coverPhotoUrl,
         Number(activity.activitySkuPrice)
       )) || activity.coverPhotoUrl
-    const sharePosterimg = activity.coverPhotoUrl
-    Toast('分享成功')
+    Toast('模拟拉起原生分享面板成功')
+    await sleep(1500)
+    ImagePreview([shareMinicard])
   }
   return {
     activityShare

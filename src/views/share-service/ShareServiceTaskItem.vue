@@ -52,9 +52,9 @@
         <div class="task-buttons">
           <div class="task-quick-button" @click="quickClick"><i></i>分享</div>
           <div class="workchat-send-button" @click="externalClick">
-            <i></i>一键群发
+            <i></i>群发
           </div>
-          <div class="task-share-button" @click="shareClick"><i></i>分享</div>
+          <div class="task-share-button" @click="shareClick"><i></i>详情</div>
         </div>
       </div>
     </div>
@@ -82,8 +82,7 @@ import { computed, PropType, ref, toRefs } from 'vue'
 import {
   MaterialType,
   ShareTaskBusinessType,
-  ShareTaskType,
-  TrackTerm
+  ShareTaskType
 } from '@/constant/shareService'
 import MediasPreview from './components/MediasPreview.vue'
 import MediasExternal from './components/MediasExternal.vue'
@@ -93,9 +92,6 @@ import LogoChengzhangjia from '@/assets/images/share-service/logo-chengzhangjia.
 import LogoZiying from '@/assets/images/share-service/logo-ziying.png'
 import LogoBaoxian from '@/assets/images/share-service/logo-baoxian.png'
 import LogoHuodong from '@/assets/images/share-service/logo-huodong.png'
-import { videoPreview } from '@/utils'
-import { ImagePreview as VanImagePreview } from 'vant'
-import { get } from 'lodash'
 import { DefaultCity } from '@/constant/city'
 
 const props = defineProps({
@@ -163,7 +159,7 @@ const externalClick = async () => {
 }
 
 const shareClick = () => {
-  location.href = `/v2/share-service/task/${task.value.id}?cityId=${cityId.value}&kwtarget=blank`
+  location.href = `/share-service/task/${task.value.id}?cityId=${cityId.value}`
 }
 
 const imageClick = (originIndex: number) => {
@@ -294,6 +290,7 @@ const videoClick = (index: number) => {
           font-size: 24px;
           line-height: 30px;
           color: #ffffff;
+          margin-right: 10px;
           i {
             width: 30px;
             height: 30px;
@@ -326,16 +323,16 @@ const videoClick = (index: number) => {
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 180px;
-          height: 56px;
+          padding: 0 20px;
+          height: 48px;
           background: #ff397e;
-          border-radius: 28px;
+          border-radius: 24px;
           font-size: 24px;
           line-height: 30px;
           color: #ffffff;
           i {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             background: url('@/assets/images/share-service/icon-share.png') 0 0/100%
               100% no-repeat;
             margin-right: 8px;

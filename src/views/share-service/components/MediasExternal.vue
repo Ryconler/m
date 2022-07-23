@@ -50,20 +50,21 @@
   </VanOverlay>
 </template>
 <script lang="ts" setup>
-/* eslint-disable vue/require-default-prop */
 import { queryShareKey } from '@/api/common'
-import { reportShareLog } from '@/api/shareService'
 import {
   MaterialType,
   ShareKeyLinkTypeWorkChat,
   ShareKeyTokenWorkChat,
   ShareKeyToolType,
-  ShareMaterialType,
-  ShareUTM,
-  TrackTerm
+  ShareMaterialType
 } from '@/constant/shareService'
-import { convertImageBase64ToFile, getPosterBase64, sleep } from '@/utils'
-import { Overlay as VanOverlay, Toast } from 'vant'
+import {
+  convertImageBase64ToFile,
+  getPosterBase64,
+  sleep,
+  videoPreview
+} from '@/utils'
+import { ImagePreview, Overlay as VanOverlay, Toast } from 'vant'
 import { toRefs, ref, PropType, Ref, computed, watch } from 'vue'
 
 const props = defineProps({
@@ -170,17 +171,7 @@ const getAttachmentsParam = async () => {
   allProgressStatus.value.shareText = ProgressStatus.Success
   /* 素材 */
   allProgressStatus.value.mediasTotal = ProgressStatus.Processing
-  shareKey.value = await queryShareKey({
-    token: ShareKeyTokenWorkChat,
-    linktype: ShareKeyLinkTypeWorkChat,
-    linkcontentid: JSON.stringify({
-      task_id: taskId?.value,
-      spuid: spuId?.value
-    }),
-    remark: JSON.stringify({
-      toolType: ShareKeyToolType
-    })
-  })
+  shareKey.value = await queryShareKey({})
   for (const index in medias.value) {
     allProgressStatus.value.medias[index] = ProgressStatus.Processing
     const material = medias.value[index]
@@ -192,12 +183,10 @@ const getAttachmentsParam = async () => {
       try {
         const posterBase64 = await getPosterBase64(
           material.picUrl,
-          material.spuId,
           material.shareLink,
           shareKey.value
         )
-        const posterFile = convertImageBase64ToFile(posterBase64)
-        const mediaid = ''
+        const mediaid = posterBase64
         attachmentsParam.value.push({
           msgtype: 'image',
           image: {
@@ -224,7 +213,7 @@ const getAttachmentsParam = async () => {
       })
       result = true
     } else if (material.materialType == MaterialType.Video) {
-      const mediaid = ''
+      const mediaid = material.picUrl
       attachmentsParam.value.push({
         msgtype: 'video',
         video: {
@@ -248,8 +237,8 @@ const shareToExternal = async () => {
 /* 发表内容到客户朋友圈 */
 const shareMomentClick = async () => {
   // 图片与视频数量限制处理
-  const iamgeAttachments = []
-  const videoAttachments = []
+  const iamgeAttachments: any[] = []
+  const videoAttachments: any[] = []
   attachmentsParam.value.forEach(item => {
     if (
       item.msgtype == 'image' &&
@@ -274,7 +263,7 @@ const shareMomentClick = async () => {
       duration: 0,
       forbidClick: true
     })
-    // iamgeAttachments.splice(9, iamgeAttachments.length - 9)
+    iamgeAttachments.splice(9, iamgeAttachments.length - 9)
     await sleep(1500)
   }
   if (videoAttachments.length > 1) {
@@ -283,7 +272,7 @@ const shareMomentClick = async () => {
       duration: 0,
       forbidClick: true
     })
-    // videoAttachments.splice(1, 1)
+    videoAttachments.splice(1, 1)
     await sleep(1500)
   }
   Toast({
@@ -291,27 +280,49 @@ const shareMomentClick = async () => {
     duration: 0,
     forbidClick: true
   })
-  Toast('分享成功')
+  Toast('模拟分享成功...')
+  await sleep(1500)
+  if (iamgeAttachments.length > 0) {
+    ImagePreview(
+      iamgeAttachments.map(item => item.image?.mediaid || item.image?.imgUrl)
+    )
+  } else if (videoAttachments.length > 0) {
+    videoPreview({
+      videoUrl: videoAttachments[0].mediaid
+    })
+  }
 }
 
 /* 群发消息给客户 */
-const shareContactClick = () => {
+const shareContactClick = async () => {
   Toast({
     message: '正在前往发送页...',
     duration: 0,
     forbidClick: true
   })
-  Toast('群发成功')
+  Toast('模拟群发成功...')
+  await sleep(1500)
+  ImagePreview(
+    attachmentsParam.value.map(
+      item => item.image?.mediaid || item.image?.imgUrl
+    )
+  )
 }
 
 /* 群发消息到客户群 */
-const shareChatClick = () => {
+const shareChatClick = async () => {
   Toast({
     message: '正在前往发送页...',
     duration: 0,
     forbidClick: true
   })
-  Toast('群发成功')
+  Toast('模拟群发成功...')
+  await sleep(1500)
+  ImagePreview(
+    attachmentsParam.value.map(
+      item => item.image?.mediaid || item.image?.imgUrl
+    )
+  )
 }
 
 defineExpose({

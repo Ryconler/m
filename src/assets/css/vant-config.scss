@@ -30,6 +30,16 @@
   /* 组件变量 */
   --van-list-text-line-height: calc(50px * 2) !important;
   --van-list-loading-icon-size: calc(16px * 2) !important;
-  --van-index-anchor-line-height: calc(32px * 2) !important;
-  --van-cell-line-height: calc(32px * 2) !important;
+
+  --van-toast-default-width: calc(88px * 2) !important;
+  --van-toast-default-min-height: calc(88px * 2) !important;
+  --van-toast-text-min-width: calc(48px * 2) !important;
+
+  --van-loading-spinner-size: calc(30px * 2) !important;
+
+  --van-overlay-z-index: 999;
+
+  --van-dialog-header-padding-top: calc(26px * 2) !important;
+  --van-dialog-width: calc(320px * 2) !important;
+  --van-dialog-button-height: calc(48px * 2) !important;
 }

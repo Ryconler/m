@@ -4,7 +4,7 @@
     name="chengzhangjia"
     :style="`min-height: calc(100vh - ${Number(classifySortOffsetTop) - 1}px)`"
   >
-    <ClassifySort2
+    <ClassifySort
       ref="classifySort"
       immediate
       :options="filterOptions"
@@ -14,7 +14,7 @@
       :sticky-distance="classifySortStickyDistance"
       :offset-top="classifySortOffsetTop"
       @filter-change="filterChange"
-    ></ClassifySort2>
+    ></ClassifySort>
     <EmptyError
       v-if="!spuList.loading && [...recommendSpus, ...spuList.list].length == 0"
       :type="spuList.error ? 'error' : 'empty'"

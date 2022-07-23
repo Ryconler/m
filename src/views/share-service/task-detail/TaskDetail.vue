@@ -106,7 +106,7 @@
               dialogCopyStatus == OperationStatus.Loading ||
               dialogDownloadStatus == OperationStatus.Loading
             "
-            @click="Toast('xx')"
+            @click="Toast('模拟原生打开微信成功...')"
           >
             <i></i>打开微信
           </button>
@@ -163,7 +163,6 @@
 <script lang="ts" setup>
 import { Overlay as VanOverlay } from 'vant'
 import {
-  convertImageBase64ToApp,
   copyTextClipboard,
   setLoading,
   getPosterBase64,
@@ -272,16 +271,7 @@ onMounted(async () => {
       })
     }
   }
-  shareKey.value = await queryShareKey({
-    token: ShareKeyTokenRKHY,
-    linktype: ShareKeyLinkTypeRKHY,
-    linkcontentid: JSON.stringify({
-      task_id: taskDetail.value?.id
-    }),
-    remark: JSON.stringify({
-      toolType: ShareKeyToolType
-    })
-  })
+  shareKey.value = await queryShareKey({})
   setLoading(false)
 })
 
@@ -338,12 +328,7 @@ const wechatClick = async () => {
       await sleep(1000)
     }
     // 拉起微信好友分享
-    Toast('拉起微信好友分享')
-    reportShareLog({
-      taskId: taskDetail.value?.id,
-      shareKey: shareKey.value,
-      utmList: `${ShareUTM.Yunke}`
-    })
+    Toast('模拟原生拉起微信成功...')
   } catch (err) {
     if (err == 'no media') {
       Toast('请选择图片/视频')
@@ -374,12 +359,7 @@ const momentClick = async () => {
       await sleep(1000)
     }
     // 拉起微信朋友圈分享
-    Toast('拉起微信朋友圈分享')
-    reportShareLog({
-      taskId: taskDetail.value?.id,
-      shareKey: shareKey.value,
-      utmList: `${ShareUTM.Yunke}`
-    })
+    Toast('模拟原生拉起微信朋友圈成功...')
   } catch (err) {
     if (err == 'no media') {
       Toast('请选择图片/视频')
@@ -464,12 +444,7 @@ async function handleCopyAndSave(silence = true, type = DialogType.Download) {
       ) {
         posterPromises.push(
           new Promise(resolve => {
-            getPosterBase64(
-              material.picUrl,
-              material.spuId,
-              material.shareLink,
-              shareKey.value
-            )
+            getPosterBase64(material.picUrl, material.shareLink, shareKey.value)
               .then(poster => {
                 mediaUrls.push(poster)
                 resolve('success')

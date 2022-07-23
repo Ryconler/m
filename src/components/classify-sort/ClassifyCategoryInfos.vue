@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CategorysType, CategoryType } from 'types/classifySort'
+import { CategorysType, CategoryType } from '@/types/classifySort'
 import { PropType } from 'vue'
 
 defineProps({
@@ -42,7 +42,7 @@ const selectClick = (category: CategoryType) => {
 
 <style lang="scss" scoped>
 .category-infos {
-  padding: 0 24px 48px;
+  padding: 0 32px 48px;
   .category-info {
     .title {
       padding-top: 48px;
@@ -54,7 +54,7 @@ const selectClick = (category: CategoryType) => {
       display: flex;
       flex-wrap: wrap;
       .category {
-        width: 160px;
+        width: 158px;
         height: 52px;
         line-height: 52px;
         box-sizing: border-box;
@@ -64,13 +64,13 @@ const selectClick = (category: CategoryType) => {
         font-size: 24px;
         border-radius: 8px;
         margin-top: 20px;
-        margin-right: 20px;
+        margin-right: 18px;
         @include ellicpsis;
         &:nth-child(4n) {
           margin-right: 0;
         }
         &.active {
-          color: #ff5900;
+          color: #ff397e;
         }
       }
     }

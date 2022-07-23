@@ -10,8 +10,12 @@
         @closed="classifyClosed"
       >
         <template #title>
-          <div class="title" @click="categoryClick">
-            {{ selectCategoryTitle }}<i></i>
+          <div
+            :class="['title', filterData.level4CategoryId && 'active']"
+            @click="categoryClick"
+          >
+            <span>{{ selectCategoryTitle }}</span>
+            <i class="arrow-one"></i>
           </div>
         </template>
         <template #default>
@@ -19,6 +23,54 @@
             :category-infos="allCategoryInfos"
             @select="categorySelect"
           ></ClassifyCategoryInfos>
+        </template>
+      </VanDropdownItem>
+      <VanDropdownItem
+        v-if="options.indexOf(FilterTypes.District) > -1"
+        ref="districtDropdownItem"
+        disabled
+        :lazy-render="false"
+        @open="classifyOpen"
+        @closed="classifyClosed"
+      >
+        <template #title>
+          <div
+            :class="['title', filterData.districtId && 'active']"
+            @click="districtClick"
+          >
+            <span>{{ selectDistrictTitle }}</span>
+            <i class="arrow-one"></i>
+          </div>
+        </template>
+        <template #default>
+          <ClassifyDistricts
+            :districts="allDistricts"
+            @select="districtSelect"
+          ></ClassifyDistricts>
+        </template>
+      </VanDropdownItem>
+      <VanDropdownItem
+        v-if="options.indexOf(FilterTypes.Store) > -1"
+        ref="storeDropdownItem"
+        disabled
+        :lazy-render="false"
+        @open="classifyOpen"
+        @closed="classifyClosed"
+      >
+        <template #title>
+          <div
+            :class="['title', filterData.storeCode && 'active']"
+            @click="storeClick"
+          >
+            <span>{{ selectStoreTitle }}</span>
+            <i class="arrow-one"></i>
+          </div>
+        </template>
+        <template #default>
+          <ClassifyStores
+            :stores="allStores"
+            @select="storeSelect"
+          ></ClassifyStores>
         </template>
       </VanDropdownItem>
       <VanDropdownItem
@@ -30,7 +82,7 @@
             :class="['title', filterData.distanceSort && 'active']"
             @click="sortToggle('distanceSort')"
           >
-            距离
+            <span>距离</span><i class="arrow-two"></i>
           </div>
         </template>
       </VanDropdownItem>
@@ -40,7 +92,7 @@
             :class="['title', filterData.shareAmountSort && 'active']"
             @click="sortToggle('shareAmountSort')"
           >
-            佣金
+            <span>佣金</span><i class="arrow-two"></i>
           </div>
         </template>
       </VanDropdownItem>
@@ -50,7 +102,7 @@
             :class="['title', filterData.storeFavPersonNumSort && 'active']"
             @click="sortToggle('storeFavPersonNumSort')"
           >
-            好评
+            <span>好评</span><i class="arrow-two"></i>
           </div>
         </template>
       </VanDropdownItem>
@@ -60,7 +112,7 @@
             :class="['title', filterData.saleNumSort && 'active']"
             @click="sortToggle('saleNumSort')"
           >
-            销量
+            <span>销量</span><i class="arrow-two"></i>
           </div>
         </template>
       </VanDropdownItem>
@@ -71,18 +123,19 @@
       class="classify-check"
       >仅看有分享赚商品</VanCheckbox
     >
+    <div v-else style="height: 0.32rem"></div>
   </VanSticky>
 </template>
 
 <script lang="ts" setup>
 import {
-  ComponentPublicInstance,
-  nextTick,
   PropType,
   ref,
   Ref,
+  watch,
   toRefs,
-  watch
+  nextTick,
+  ComponentPublicInstance
 } from 'vue'
 import {
   Sticky as VanSticky,
@@ -92,8 +145,16 @@ import {
   DropdownItemInstance
 } from 'vant'
 import ClassifyCategoryInfos from './ClassifyCategoryInfos.vue'
+import ClassifyDistricts from './ClassifyDistricts.vue'
+import ClassifyStores from './ClassifyStores.vue'
 import { FilterTypes } from '@/constant/classifySort'
-import { CategorysType, CategoryType, FilterDataType } from 'types/classifySort'
+import {
+  CategorysType,
+  CategoryType,
+  DistrictType,
+  FilterDataType,
+  StoreType
+} from '@/types/classifySort'
 
 const props = defineProps({
   /* 显示的选项 */
@@ -116,8 +177,28 @@ const props = defineProps({
       return {}
     }
   },
+  /* 可选择的品类 */
   categoryInfos: {
     type: Array as PropType<CategorysType[]>,
+    default() {
+      return []
+    }
+  },
+  /* 默认全部品类时的标题 */
+  categoryTitle: {
+    type: String,
+    default: '全部'
+  },
+  /* 可选择的城区 */
+  districts: {
+    type: Array as PropType<DistrictType[]>,
+    default() {
+      return []
+    }
+  },
+  /* 可选择的门店 */
+  stores: {
+    type: Array as PropType<StoreType[]>,
     default() {
       return []
     }
@@ -134,10 +215,13 @@ const props = defineProps({
   }
 })
 const {
-  options,
   immediate,
   initialFilter,
   categoryInfos,
+  categoryTitle,
+  districts,
+  stores,
+  options,
   stickyDistance,
   offsetTop
 } = toRefs(props)
@@ -146,7 +230,7 @@ const emit = defineEmits(['filter-change'])
 
 const classifySort: Ref<ComponentPublicInstance | null> = ref(null)
 
-/* 设置父元素的最低高度 */
+/* 设置父元素的最低高度足以支持吸顶 */
 watch(
   offsetTop,
   () => {
@@ -244,7 +328,12 @@ const { classifyOpen, classifyClosed } = (() => {
   }
 })()
 
-const categoryDropdownItem = ref()
+const categoryDropdownItem: Ref<ComponentPublicInstance<DropdownItemInstance> | null> =
+  ref(null)
+const districtDropdownItem: Ref<ComponentPublicInstance<DropdownItemInstance> | null> =
+  ref(null)
+const storeDropdownItem: Ref<ComponentPublicInstance<DropdownItemInstance> | null> =
+  ref(null)
 const {
   allCategoryInfos,
   selectCategoryTitle,
@@ -273,10 +362,24 @@ const {
     allCategoryInfos.value = [firstCategory, ...categoryInfos.value]
   })
   // 下拉框上显示的标题
-  const selectCategoryTitle = ref('全部')
+  const selectCategoryTitle = ref(categoryTitle.value)
   // 下拉框点击
   const categoryClick = () => {
-    categoryDropdownItem.value && categoryDropdownItem.value.toggle()
+    if (
+      districtDropdownItem.value &&
+      districtDropdownItem.value.state.showPopup
+    ) {
+      // 关闭其他下拉菜单
+      districtDropdownItem.value && districtDropdownItem.value.toggle(false)
+    } else if (
+      storeDropdownItem.value &&
+      storeDropdownItem.value.state.showPopup
+    ) {
+      // 关闭其他下拉菜单
+      storeDropdownItem.value && storeDropdownItem.value.toggle(false)
+    } else {
+      categoryDropdownItem.value && categoryDropdownItem.value.toggle()
+    }
   }
   // 品类项选择
   const categorySelect = (category: CategoryType) => {
@@ -306,7 +409,7 @@ const {
       })
     })
     allCategoryInfos.value[0].list[0].selected = true
-    selectCategoryTitle.value = '全部'
+    selectCategoryTitle.value = categoryTitle.value
   }
 
   return {
@@ -317,6 +420,142 @@ const {
     resetCategory
   }
 })()
+
+const {
+  allDistricts,
+  selectDistrictTitle,
+  districtClick,
+  districtSelect,
+  resetDistrict
+} = (() => {
+  const firstDistrict = { name: '全城', selected: true }
+  // 所有可选城区
+  const allDistricts: Ref<DistrictType[]> = ref([
+    firstDistrict,
+    ...districts.value
+  ])
+  watch(districts, () => {
+    allDistricts.value = [firstDistrict, ...districts.value]
+  })
+
+  // 下拉框上显示的标题
+  const selectDistrictTitle = ref('全城')
+  // 下拉框点击
+  const districtClick = () => {
+    if (
+      categoryDropdownItem.value &&
+      categoryDropdownItem.value.state.showPopup
+    ) {
+      // 关闭其他下拉菜单
+      categoryDropdownItem.value && categoryDropdownItem.value.toggle(false)
+    } else if (
+      storeDropdownItem.value &&
+      storeDropdownItem.value.state.showPopup
+    ) {
+      // 关闭其他下拉菜单
+      storeDropdownItem.value && storeDropdownItem.value.toggle(false)
+    } else {
+      districtDropdownItem.value && districtDropdownItem.value.toggle()
+    }
+  }
+  // 城区项选择
+  const districtSelect = (district: DistrictType) => {
+    allDistricts.value.forEach(_district => {
+      if (_district === district) {
+        _district.selected = true
+        selectDistrictTitle.value = _district.name
+      } else {
+        _district.selected = false
+      }
+    })
+    if (district.id) {
+      filterData.value.districtId = district.id
+    } else {
+      delete filterData.value.districtId
+    }
+    districtDropdownItem.value && districtDropdownItem.value.toggle(false)
+  }
+  // 重置下拉框显示
+  const resetDistrict = () => {
+    allDistricts.value.forEach(_district => {
+      _district.selected = false
+    })
+    allDistricts.value[0].selected = true
+    selectDistrictTitle.value = '全城'
+  }
+
+  return {
+    allDistricts,
+    selectDistrictTitle,
+    districtClick,
+    districtSelect,
+    resetDistrict
+  }
+})()
+
+const { allStores, selectStoreTitle, storeClick, storeSelect, resetStore } =
+  (() => {
+    const firstStore = { name: '全部', selected: true }
+    // 所有可选门店
+    const allStores: Ref<StoreType[]> = ref([firstStore, ...stores.value])
+    watch(stores, () => {
+      allStores.value = [firstStore, ...stores.value]
+    })
+
+    // 下拉框上显示的标题
+    const selectStoreTitle = ref('全部')
+    // 下拉框点击
+    const storeClick = () => {
+      if (
+        categoryDropdownItem.value &&
+        categoryDropdownItem.value.state.showPopup
+      ) {
+        // 关闭其他下拉菜单
+        categoryDropdownItem.value && categoryDropdownItem.value.toggle(false)
+      } else if (
+        districtDropdownItem.value &&
+        districtDropdownItem.value.state.showPopup
+      ) {
+        // 关闭其他下拉菜单
+        districtDropdownItem.value && districtDropdownItem.value.toggle(false)
+      } else {
+        storeDropdownItem.value && storeDropdownItem.value.toggle()
+      }
+    }
+    // 门店项选择
+    const storeSelect = (store: StoreType) => {
+      allStores.value.forEach(_store => {
+        if (_store === store) {
+          _store.selected = true
+          selectStoreTitle.value = _store.name
+        } else {
+          _store.selected = false
+        }
+      })
+      if (store.code) {
+        filterData.value.storeCode = store.code
+      } else {
+        delete filterData.value.storeCode
+      }
+      storeDropdownItem.value && storeDropdownItem.value.toggle(false)
+    }
+    // 重置下拉框显示
+    const resetStore = () => {
+      allStores.value.forEach(_store => {
+        _store.selected = false
+      })
+      allStores.value[0].selected = true
+      selectStoreTitle.value = '全部'
+    }
+
+    return {
+      allStores,
+      selectStoreTitle,
+      storeClick,
+      storeSelect,
+      resetStore
+    }
+  })()
 
 const { sortToggle } = (() => {
   /* 排序按钮点击切换 */
@@ -346,6 +585,8 @@ const { sortToggle } = (() => {
     filterData.value[sortKey] = newSort
     // 关闭所有下拉菜单
     categoryDropdownItem.value && categoryDropdownItem.value.toggle(false)
+    districtDropdownItem.value && districtDropdownItem.value.toggle(false)
+    storeDropdownItem.value && storeDropdownItem.value.toggle(false)
   }
   return {
     sortToggle
@@ -354,9 +595,13 @@ const { sortToggle } = (() => {
 
 defineExpose({
   allCategoryInfos,
+  allDistricts,
+  allStores,
   reset() {
     resetFilterData()
     resetCategory()
+    resetDistrict()
+    resetStore()
   }
 })
 </script>
@@ -365,75 +610,122 @@ defineExpose({
 .classify-sort {
   overflow: hidden;
   .van-dropdown-menu {
+    /* 整体按钮 */
     :deep(.van-dropdown-menu__bar) {
       height: auto;
-      padding: 0 24px;
+      padding: 0 32px;
       overflow: hidden;
       flex-wrap: nowrap;
       box-shadow: none;
-      background: #ffffff;
+      background: transparent;
+      /* 单项按钮 */
       .van-dropdown-menu__item {
         margin-right: 18px;
         flex: none;
-
+        width: 23%;
         .van-dropdown-menu__title {
           padding: 0;
+          flex: 1;
           &::after {
             display: none;
           }
+          /* 常规状态下的标题与箭头 */
           .title {
-            width: 162px;
-            height: 60px;
-            line-height: 60px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px;
+            box-sizing: border-box;
+            // width: 158px;
+            height: 52px;
+            line-height: 52px;
             font-size: 26px;
             color: #666666;
             background: #ffffff;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            @include ellicpsis;
+            border-radius: 8px;
+            span {
+              @include ellicpsis;
+            }
             i {
+              flex: none;
               display: inline-block;
               vertical-align: middle;
-              width: 10px;
-              height: 8px;
-              background: url('@/assets/images/classify-sort/icon-arrow-down.png')
-                0 0/100% 100% no-repeat;
+              background-image: url('@/assets/images/classify-sort/icon-arrow-sprite.png');
+              background-repeat: no-repeat;
               margin-left: 8px;
+              &.arrow-one {
+                width: 12px;
+                height: 6px;
+                background-size: 12px 16px;
+                background-position: 0 -10px;
+              }
+              &.arrow-two {
+                width: 12px;
+                height: 16px;
+                background-size: 12px 16px;
+                background-position: 0 0;
+              }
             }
           }
-          .title.active {
-            color: #ff5900;
+          /* 展开时与选中后的标题高亮 */
+          .title.active,
+          &.van-dropdown-menu__title--down .title {
+            color: #ff397e;
+            i {
+              background-image: url('@/assets/images/classify-sort/icon-arrow-sprite-down.png');
+            }
           }
         }
+        /* 展开时的标题箭头旋转 */
         .van-dropdown-menu__title.van-dropdown-menu__title--down {
           .title {
-            background: #f6f6f6;
             i {
-              transform: rotate(180deg);
+              &.arrow-one {
+                transform: rotate(180deg);
+              }
             }
+          }
+        }
+      }
+      &.van-dropdown-menu__bar--opened .van-dropdown-menu__item {
+        .van-dropdown-menu__title {
+          .title {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
           }
         }
       }
     }
+    /* 下拉菜单列表 */
     :deep(.van-dropdown-item) {
-      .van-overlay {
-        top: 2px;
-      }
       .van-dropdown-item__content {
-        background: #f6f6f6;
+        top: -2px; //菜单内容区域上移一点否则上面会露出一点黑色背景
+        background: #f4f5fa;
         border-bottom-left-radius: 16px;
         border-bottom-right-radius: 16px;
       }
     }
   }
+  /* 吸顶后 */
+  :deep(.van-sticky--fixed .van-dropdown-menu) {
+    .van-dropdown-menu__bar {
+      .van-dropdown-menu__item {
+        .van-dropdown-menu__title {
+          .title {
+            background: #f4f5fa; //与body背景同色
+          }
+        }
+      }
+    }
+  }
+  /* 分享赚筛选框 */
   .classify-check {
     height: 60px;
-    margin: 20px 24px;
+    margin: 20px 32px 24px;
     justify-content: center;
-    background: #fff3ed;
+    background: #fff3f7;
     overflow: initial;
-    border: 1px solid #ff5900;
+    border: 2px solid #ff6aa0;
     border-radius: 6px;
     :deep(.van-checkbox__icon) {
       height: auto;
@@ -451,13 +743,13 @@ defineExpose({
     }
     :deep(.van-checkbox__icon--checked) {
       i {
-        border-color: #ff5900;
-        background-color: #ff5900;
+        border-color: #ff397e;
+        background-color: #ff397e;
       }
     }
     :deep(.van-checkbox__label) {
       font-size: 26px;
-      color: #ff5900;
+      color: #ff397e;
       line-height: 30px;
       margin-left: 8px;
     }

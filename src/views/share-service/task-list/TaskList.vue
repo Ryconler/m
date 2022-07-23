@@ -96,7 +96,7 @@
 <script lang="ts" setup>
 import { Tabs as VanTabs, Tab as VanTab } from 'vant'
 import { Ref, ref, onMounted, computed } from 'vue'
-import { ensureLogin, setLoading } from '@/utils'
+import { setLoading } from '@/utils'
 import ShareServiceTaskItem from '../ShareServiceTaskItem.vue'
 import iconFail from '@/assets/images/empty-error/icon-fail.png'
 import { ShareTaskBusinessType, ShareTaskType } from '@/constant/shareService'
@@ -105,8 +105,6 @@ import { useLocation } from '@/composables/common'
 import { useRoute } from 'vue-router'
 
 setLoading(true)
-
-ensureLogin()
 
 const route = useRoute()
 

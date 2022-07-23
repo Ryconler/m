@@ -24,7 +24,7 @@
         :key="index"
         class="insurance-item"
       >
-        <a class="insurance-info" :href="getKwtargetUrl(item.redirectUrl)">
+        <a class="insurance-info" :href="item.redirectUrl">
           <BaseImg
             class="insurance-image"
             :src="item.imageUrl"
@@ -107,7 +107,7 @@ import {
   useShareInsurances
 } from '@/composables/share-service/shareServiceEarnTabBX'
 import { useOffsetTop } from '@/composables/share-service/common'
-import { getKwtargetUrl, getYenPrice } from '@/utils'
+import { getYenPrice } from '@/utils'
 
 const { insuranceList } = useShareInsurances()
 

@@ -4,7 +4,7 @@ import { getAllCityListResultType } from '@/types/city'
 import { ResultType } from '@/types/http'
 
 const api = {
-  getAllCityList: `${urlPrefixes.mapi}/city/getAllCityList`
+  getAllCityList: `${urlPrefixes.mapi}/addressview/GetAllCityList`
 }
 
 export async function getAllCityList(): Promise<getAllCityListResultType[]> {
@@ -12,8 +12,8 @@ export async function getAllCityList(): Promise<getAllCityListResultType[]> {
     const result: ResultType<getAllCityListResultType[]> = await ajax.get(
       `${api.getAllCityList}`
     )
-    const { data, code } = result
-    if (code == 1) {
+    const { data, errno } = result
+    if (errno == 0) {
       return data || []
     } else {
       return []

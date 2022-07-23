@@ -2,9 +2,8 @@ import { queryShareSpus } from '@/api/shareService'
 import { FilterTypes } from '@/constant/classifySort'
 import { ShareSpuType } from '@/constant/shareService'
 import { CityType } from '@/types/city'
-import { CategorysType, FilterDataType } from '@/types/classifySort'
+import { FilterDataType } from '@/types/classifySort'
 import { PositionType } from '@/types/position'
-import { getLevel3CategoryIdBy4, isInFrame, isIos12 } from '@/utils'
 import { computed, nextTick, reactive, Ref, ref } from 'vue'
 
 /* 成长加模块分享赚商品列表 */
@@ -14,7 +13,6 @@ export const useShareSpus = (
   classifySort: Ref<any>,
   allRecommendSpus: Ref<ShareSpuType[]>
 ) => {
-  const isInIos12Iframe = isIos12() && isInFrame() //低版本ios的iframe高度会自适应内容，这里的滚动加载需特殊处理
   const spuList = reactive({
     list: <ShareSpuType[]>[],
     loading: false,
@@ -51,23 +49,19 @@ export const useShareSpus = (
           }
         }
         await nextTick()
-        !isInIos12Iframe && (spuList.loading = false)
+        spuList.loading = false
       } catch (error) {
-        !isInIos12Iframe && (spuList.loading = false)
+        spuList.loading = false
         spuList.error = true
       }
     },
-    itemInView: (isLast = false) => {
-      if (isInIos12Iframe && isLast) {
-        spuList.load()
-      }
-    }
+    itemInView: (isLast = false) => {}
   })
   const categoryInfo = ref([])
   const filterOptions = computed(() => {
     const options = [
       FilterTypes.Category,
-      FilterTypes.Distance,
+      FilterTypes.District,
       FilterTypes.Earn,
       FilterTypes.Sale
     ]

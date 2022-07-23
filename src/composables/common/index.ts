@@ -7,7 +7,10 @@ import { queryDistricts } from '@/api/common'
 import { DistrictType } from '@/types/classifySort'
 
 /* 获取选择城市、定位等信息 */
-export const useLocation = (options: { districts: boolean }) => {
+export const useLocation = (options: {
+  districts: boolean
+  position: boolean
+}) => {
   const position: Ref<PositionType | null> = ref(null)
   const cityInfo: Ref<CityType> = ref(DefaultCity)
   const districts: Ref<DistrictType[]> = ref([])
@@ -19,7 +22,7 @@ export const useLocation = (options: { districts: boolean }) => {
       cityInfo.value = cookieCity
     } else {
       /* 2、没有取定位城市 */
-      position.value = await getPosition()
+      options.position && (position.value = await getPosition())
       if (position.value != null) {
         cityInfo.value = {
           cityId: position.value.cityId,
@@ -32,7 +35,7 @@ export const useLocation = (options: { districts: boolean }) => {
     }
     // 设置cookie city
     setSelectCity(cityInfo.value.cityId, cityInfo.value.cityName)
-    if (position.value == null) {
+    if (position.value == null && options.position) {
       // 上面的操作没有用到定位时，异步获取定位，不影响titlebar的城市显示
       getPosition().then(data => {
         position.value = data

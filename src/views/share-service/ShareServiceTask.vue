@@ -19,9 +19,8 @@
 </template>
 <script lang="ts" setup>
 import { DefaultCity } from '@/constant/city'
-import { ShareTaskType, TrackTerm } from '@/constant/shareService'
+import { ShareTaskType } from '@/constant/shareService'
 import { CityType } from '@/types/city'
-import {} from '@/utils'
 import { PropType, toRefs } from 'vue'
 import ShareServiceTaskItem from './ShareServiceTaskItem.vue'
 
@@ -43,7 +42,7 @@ const props = defineProps({
 const { cityInfo, tasks } = toRefs(props)
 
 const moreClick = () => {
-  location.href = `/v2/share-service/task-list?cityId=${cityInfo.value.cityId}&kwtarget=blank`
+  location.href = `/share-service/task-list?cityId=${cityInfo.value.cityId}`
 }
 </script>
 <style lang="scss" scoped>
