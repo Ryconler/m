@@ -100,23 +100,19 @@ export const useShareActivities = (
 
 export const useActivityInfo = (cityInfo: Ref<CityType>) => {
   const activityLink = (activity: ShareActivityType) => {
-    return `https://w.cekid.com/interaction-activity/detail/${activity.activityId}`
+    return `xbuy-event/1`
   }
   const storeLink = (store: { storeCode: string; storeName: string }) => {
-    return `https://w.cekid.com/interaction-activity/storeactlist/?entityid=${
-      store.storeCode
-    }&entityname=${encodeURIComponent(store.storeName)}&cityid=${
-      cityInfo.value.cityId
-    }&cityname=${cityInfo.value.cityName}`
+    return `xbuy-event/1`
   }
   const activityClick = async (activity: ShareActivityType) => {
-    location.href = activityLink(activity) + '?kwtarget=blank'
+    location.href = activityLink(activity)
   }
   const storeClick = async (store: {
     storeCode: string
     storeName: string
   }) => {
-    location.href = storeLink(store) + '&kwtarget=blank'
+    location.href = storeLink(store)
   }
 
   return {

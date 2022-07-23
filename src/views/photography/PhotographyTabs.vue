@@ -57,7 +57,6 @@ import {
   nextTick,
   PropType,
   computed,
-  getCurrentInstance,
   Ref,
   ref,
   toRefs,
@@ -344,7 +343,7 @@ const {
           font-size: 30px;
           color: #ffffff;
           line-height: 36px;
-          @include ellicpsis;
+          @include ellipsis;
         }
       }
     }

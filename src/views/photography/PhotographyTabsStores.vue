@@ -22,7 +22,7 @@
 </template>
 <script lang="ts" setup>
 import { getDistanceKm } from '@/utils'
-import { getCurrentInstance, PropType } from 'vue'
+import { PropType } from 'vue'
 
 defineProps({
   stores: {
@@ -33,9 +33,8 @@ defineProps({
   }
 })
 
-const internalInstance = getCurrentInstance()
 const getShopUrl = (store: any) => {
-  return 'https://www.baidu.com'
+  return '/xbuy-event/1'
 }
 </script>
 <style lang="scss" scoped>

@@ -179,15 +179,11 @@ import {
 import { useRoute } from 'vue-router'
 import {
   MaterialType,
-  ShareKeyLinkTypeRKHY,
-  ShareKeyTokenRKHY,
-  ShareKeyToolType,
   ShareMaterialType,
-  ShareTaskType,
-  ShareUTM
+  ShareTaskType
 } from '@/constant/shareService'
 import { useLocation } from '@/composables/common'
-import { queryShareTask, reportShareLog } from '@/api/shareService'
+import { queryShareTask } from '@/api/shareService'
 import { get } from 'lodash'
 import { queryShareKey } from '@/api/common'
 

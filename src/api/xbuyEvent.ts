@@ -5,9 +5,9 @@ import { ResultType } from '@/types/http'
 import jsCookie from 'js-cookie'
 
 const api = {
-  queryEventInfo: `${urlPrefixes.spromotionapi}/spromotion-api/xpurchase/getXPurchaseDetail.do`,
-  participateEvent: `${urlPrefixes.spromotionapi}/spromotion-api/xpurchase/addXPurchase.do`,
-  helpEvent: `${urlPrefixes.spromotionapi}/spromotion-api/xpurchase/assistance.do`
+  queryEventInfo: `${urlPrefixes.mockApi}/spromotion-api/xpurchase/getXPurchaseDetail.do`,
+  participateEvent: `${urlPrefixes.mockApi}/spromotion-api/xpurchase/addXPurchase.do`,
+  helpEvent: `${urlPrefixes.mockApi}/spromotion-api/xpurchase/assistance.do`
 }
 
 export async function queryEventInfo(eventId: number, skuId: number) {

@@ -6,7 +6,7 @@ import { computed, Ref } from 'vue'
 
 export const useSpuInfo = (spu: Ref<ShareSpuType>, realSpuId: Ref<number>) => {
   const spuLink = computed(() => {
-    return 'https://m.wzmxx.com'
+    return '/xbuy-event/1'
   })
   const spuSaleNum = computed(() => {
     const saleNum = +(<number>spu.value.saleNum)

@@ -140,7 +140,7 @@ const getRecommendDesc = (product: any) => {
 }
 
 const getProductUrl = (product: any) => {
-  return `https://wwww.baidu.com`
+  return `/xbuy-event/1`
 }
 
 const themePicClick = (theme: any, picIndex: number) => {
@@ -168,7 +168,6 @@ const themePicClick = (theme: any, picIndex: number) => {
     .theme {
       .theme-title {
         padding: 40px 24px 24px;
-        height: 36px;
         overflow: hidden;
         font-size: 30px;
         line-height: 36px;

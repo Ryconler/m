@@ -1,20 +1,5 @@
-import { queryShareConfig } from '@/api/shareService'
-import {
-  ShareConfigAdType,
-  ShareConfigBannerType,
-  ShareSpuItemType
-} from '@/constant/shareEarn'
-import { CityType } from '@/types/city'
 import { rem2RealPx } from '@/utils'
-import {
-  computed,
-  getCurrentInstance,
-  nextTick,
-  onMounted,
-  ref,
-  Ref
-} from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue'
 
 export const useOffsetTop = () => {
   const classifySortOffsetTop = computed(() => {

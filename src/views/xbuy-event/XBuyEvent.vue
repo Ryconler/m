@@ -50,7 +50,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, ref, Ref } from 'vue'
-import { ensureLogin, setLoading } from '@/utils'
+import { setLoading } from '@/utils'
 import { Overlay as VanOverlay } from 'vant'
 import XBuyEventHeader from './XBuyEventHeader.vue'
 import XBuyEventStatus from './XBuyEventStatus.vue'
@@ -102,7 +102,7 @@ const statusShowType: Ref<StatusShowType> = ref(StatusShowType.Unknown)
 const dialogShowType: Ref<DialogShowType> = ref(DialogShowType.None)
 const userInfo: Ref<any> = ref(null)
 const sharerUid = ref(route.query.sharerUid ? `${route.query.sharerUid}` : '') //url参数上的活动分享人uid
-const isSharer = ref(!sharerUid.value || sharerUid.value == uid) //活动访问者身份：参与人
+const isSharer = ref(true || !sharerUid.value || sharerUid.value == uid) //活动访问者身份：参与人
 const isHelper = ref(!!sharerUid.value && sharerUid.value != uid) //活动访问者身份：助力人
 
 onMounted(async () => {
@@ -112,8 +112,6 @@ onMounted(async () => {
   const skuId = route.query.skuId
 
   eventInfo.value = await queryEventInfo(Number(eventId), Number(skuId))
-  setShareInfo()
-
   if (isSharer.value) {
     /* 分享人处理逻辑 */
     if (
@@ -182,29 +180,6 @@ function setDialogShowType() {
   } else if (eventInfo.value.helpMsg) {
     dialogShowType.value = DialogShowType.OtherMsg
   }
-}
-
-function setShareInfo() {
-  const url = qs.parseUrl(location.href)
-  let sharerUid = url.query.sharerUid ? `${url.query.sharerUid}` : ''
-  let sharerName = decodeURIComponent(
-    url.query.sharerName ? `${url.query.sharerName}` : ''
-  )
-  if (isSharer.value) {
-    sharerUid = uid
-    sharerName = userInfo.value ? userInfo.value.nickname : ''
-    // url上补全分享人信息，兼容一下微信分享
-    router.replace({
-      query: {
-        ...route.query,
-        sharerUid,
-        sharerName: encodeURIComponent(sharerName)
-      }
-    })
-  }
-  url.query.sharerUid = sharerUid
-  url.query.sharerName = encodeURIComponent(sharerName)
-  const link = qs.stringifyUrl(url)
 }
 
 /* 助力成功，查询商品更多的详细信息，下单时用 */

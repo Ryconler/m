@@ -45,12 +45,7 @@ const props = defineProps({
 const { eventInfo } = toRefs(props)
 
 const jumpSku = () => {
-  let { templateType2Id, spuId, skuId, businessId } = eventInfo.value
-  if (templateType2Id == 601) {
-    businessId = spuId
-    spuId = skuId
-  }
-  location.href = 'https://www.baidu.com'
+  location.href = '/share-service'
 }
 </script>
 <style lang="scss" scoped>

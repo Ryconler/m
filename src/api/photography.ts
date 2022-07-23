@@ -5,10 +5,10 @@ import { ajax, getPosition, http } from '@/utils'
 import qs from 'query-string'
 
 const api = {
-  getPhotographyConfig: `${urlPrefixes.cms999}/photography-config.json`,
-  getPhotographyInfo: `${urlPrefixes.svsesapi}/querySelfPhoto.do`,
-  getPhotographyStores: `${urlPrefixes.scbapi}/store/selfPhotographyStoreList.do`,
-  getMinPriceSpu: `${urlPrefixes.sccapi}/api/spu/queryMinPriceSpuByTheme.do`
+  getPhotographyConfig: `${urlPrefixes.mockApi}/photography-config.json`,
+  getPhotographyInfo: `${urlPrefixes.mockApi}/querySelfPhoto.do`,
+  getPhotographyStores: `${urlPrefixes.mockApi}/store/selfPhotographyStoreList.do`,
+  getMinPriceSpu: `${urlPrefixes.mockApi}/api/spu/queryMinPriceSpuByTheme.do`
 }
 
 export async function getPhotographyConfig() {

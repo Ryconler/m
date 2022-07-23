@@ -1,7 +1,7 @@
 <template>
   <div v-if="eventInfo.content" class="xbuy-event-product-detail">
     <div class="detail-title pf-medium">商品详情</div>
-    <div v-xhtml="eventInfo.content" class="detail-content"></div>
+    <div v-html="eventInfo.content" class="detail-content"></div>
   </div>
 </template>
 <script lang="ts" setup>

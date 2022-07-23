@@ -1,18 +1,11 @@
 import urlPrefixes from '@/constant/urlPrefixes'
 import { ajax, auth, http } from '@/utils'
-import jsCookie from 'js-cookie'
-import qs from 'query-string'
 
 const api = {
-  queryDistricts: `${urlPrefixes.addressapi}/addressview/GetDistrictList`,
-  queryUserInfo: `${urlPrefixes.userapi}/user/GetUserInfo`,
-  queryShareKey: `${urlPrefixes.mallbackapi}/share/commercialInterface/getKey.do`,
-  queryCmmdtyDetail: `${urlPrefixes.sccapi}/api/spu/queryCmmdtyDetail.do`,
-  uploadImageMedia: `${urlPrefixes.workchatapi}/workchat-media/web/c/v1/upload-image-media`,
-  getImageMedia: `${urlPrefixes.workchatapi}/workchat-media/web/c/v1/image-mediaid`,
-  getVideoMedia: `${urlPrefixes.workchatapi}/workchat-media/web/c/v1/video-mediaid`,
-  uplodaImageCMS: `${urlPrefixes.imsapi}/pic/file/upload.do`,
-  getMinicode: `${urlPrefixes.miniappqrcodeapi}/api/v1/qrcode/new/qrcode`
+  queryDistricts: `${urlPrefixes.mockApi}/addressview/GetDistrictList`,
+  queryShareKey: `${urlPrefixes.mockApi}/share/commercialInterface/getKey.do`,
+  uplodaImageCMS: `${urlPrefixes.mockApi}/pic/file/upload.do`,
+  getMinicode: `${urlPrefixes.mockApi}/api/v1/qrcode/new/qrcode`
 }
 
 export async function queryDistricts(cityId: number | string) {
@@ -25,35 +18,6 @@ export async function queryDistricts(cityId: number | string) {
   }
 }
 
-export async function queryUserInfo({
-  visitkey,
-  padetail,
-  pregnant
-}: any = {}) {
-  try {
-    const uid = jsCookie.get('uid')
-    const skey = jsCookie.get('skey')
-    if (!uid || !skey) {
-      return null
-    }
-    const query = qs.stringify({
-      uid,
-      skey,
-      visitkey,
-      padetail,
-      pregnant
-    })
-    const result: any = await ajax.get(`${api.queryUserInfo}?${query}`)
-    if (result.errno === 0) {
-      return result.data || null
-    } else {
-      return null
-    }
-  } catch (e) {
-    return null
-  }
-}
-
 /**
  * http://wiki.haiziwang.com/xwiki/bin/view/Main/%E5%95%86%E5%9F%8E%E4%BA%A7%E5%93%81%E7%A0%94%E5%8F%91/%E5%88%86%E4%BA%ABKey%E7%B3%BB%E7%BB%9F-share/%E8%8E%B7%E5%8F%96Key%E6%8E%A5%E5%8F%A3/
  */
@@ -63,77 +27,6 @@ export async function queryShareKey(params = {}) {
     return ''
   } else {
     return currentUser.uid || ''
-  }
-}
-
-export async function getShareImage(params: {
-  imageurl: string
-  price: number
-  product_name: string
-}) {
-  const query_param = {
-    source: 'HZWMALL_android',
-    scene_id: 1,
-    entity_id: 8000,
-    ...params
-  }
-  const query = qs.stringify(query_param)
-  const result: any = await ajax.get(
-    `//social.cekid.com/shequn-business/web/c/v1/shareimage?${query}`
-  )
-  return result.data || {}
-}
-/* 查询商品详情 */
-export async function queryCmmdtyDetail(param: {
-  skuId: number
-  spuId: number
-}) {
-  const uid = jsCookie.get('uid')
-  const skey = jsCookie.get('skey')
-  const query = qs.stringify({
-    uid,
-    skey,
-    ...param
-  })
-  const result: any = await ajax.get(`${api.queryCmmdtyDetail}?${query}`)
-  if (result.code == '1') {
-    return result.data || {}
-  } else {
-    return {}
-  }
-}
-
-/* 上传图片临时素材获取MediaId */
-export async function uploadImageMedia(file: File) {
-  const param = new FormData()
-  param.append('file', file)
-  const result: any = await http.post(`${api.uploadImageMedia}`, param, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })
-  if (result.code == 1001) {
-    return result.data || {}
-  } else {
-    return {}
-  }
-}
-
-/* 根据图片url获取media_id */
-export async function getImageMedia(videoUrl: string) {
-  const result: any = await http.get(`${api.getImageMedia}?`)
-  if (result.code == 1001) {
-    return result.data || {}
-  } else {
-    return {}
-  }
-}
-
-/* 根据视频url获取media_id */
-export async function getVideoMedia(videoUrl: string) {
-  const result: any = await http.get(`${api.getVideoMedia}`)
-  if (result.code == 1001) {
-    return result.data || {}
-  } else {
-    return {}
   }
 }
 

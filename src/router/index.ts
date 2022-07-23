@@ -32,6 +32,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   /* 云客与企微的服务分享页 */
   {
+    alias: '/',
     path: '/share-service',
     name: 'shareService',
     component: () => import('@/views/share-service/ShareService.vue')
@@ -53,13 +54,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/xbuy-event/:eventId',
     name: 'xbuyEvent',
     component: () => import('@/views/xbuy-event/XBuyEvent.vue'),
-    meta: { keepAlive: true }
-  },
-  /* 图片全屏预览页 */
-  {
-    path: '/fullscreen-preview',
-    name: 'fullscreenPreview',
-    component: () => import('@/views/fullscreen-preview/FullscreenPreview.vue'),
     meta: { keepAlive: true }
   },
   /* 错误提示页 */

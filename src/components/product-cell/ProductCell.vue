@@ -36,7 +36,7 @@ export default defineComponent({
   setup(props: any) {
     const productUrl = ref('')
     watchEffect(() => {
-      productUrl.value = ``
+      productUrl.value = `/xbuy-event/1`
     })
 
     return { productUrl }

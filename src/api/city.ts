@@ -4,7 +4,7 @@ import { getAllCityListResultType } from '@/types/city'
 import { ResultType } from '@/types/http'
 
 const api = {
-  getAllCityList: `${urlPrefixes.mapi}/addressview/GetAllCityList`
+  getAllCityList: `${urlPrefixes.mockApi}/addressview/GetAllCityList`
 }
 
 export async function getAllCityList(): Promise<getAllCityListResultType[]> {
